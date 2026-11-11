@@ -1,0 +1,3000 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Enveloppe de l'appli autonome (hors claude.ai) : installation sur l'écran d'accueil, usage hors ligne, et le mini-reset que claude.ai ajoute lui-même autour des artefacts. Rien de cette enveloppe n'est publié sur claude.ai. -->
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151F1A" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Smash">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<!-- ===== Début de la source de l'artefact claude.ai : pour republier, prendre uniquement ce qui suit, jusqu'au commentaire de fin ===== -->
+<title>Smash Badminton</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Smash : tournois de badminton à la mêlée ou en équipes fixes, tirage des équipes, scores, classements et finales.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: phone-first app shell — sticky title bar, one centred column (max 760px) of match cards drawn as real 13,40 × 6,10 m courts; tab bar fixed to the bottom on phones, under the header on wide screens */
+:root {
+  --bg: #EBF0EA;
+  --surface: #FFFFFF;
+  --surface-2: #F3F6F1;
+  --ink: #14201A;
+  --muted: #58685F;
+  --rule: #D1DACF;
+  --link: #1D6A4D;
+  --court: #2B7255;
+  --court-deep: #215C45;
+  --court-line: rgba(255, 255, 255, .88);
+  --court-ink: #FFFFFF;
+  --alley-dim: rgba(0, 0, 0, .2);
+  --shuttle: #F2C230;
+  --shuttle-deep: #A87A00;
+  --shuttle-ink: #2A2000;
+  --score-bg: #FFFFFF;
+  --score-ink: #14201A;
+  --men: #2F5496;
+  --women: #7A35A8;
+  --ok: #2B7A4B;
+  --warn: #9A5410;
+  --danger: #B42318;
+  --on-danger: #FFFFFF;
+  --focus: #1F5FD0;
+  --scrim: rgba(12, 20, 16, .45);
+  --toast-bg: #14201A;
+  --toast-ink: #FFFFFF;
+  --toast-action: #F2C230;
+  --shadow: 0 1px 2px rgba(20, 33, 27, .08), 0 6px 18px rgba(20, 33, 27, .08);
+  --font-display: "Big Shoulders Display", "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --topbar-h: 57px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1411; --surface: #151F1A; --surface-2: #1B2821; --ink: #E3EBE5; --muted: #9AA9A1; --rule: #2A3832; --link: #7DD3A9;
+    --court: #226148; --court-deep: #1A4B38; --court-line: rgba(255, 255, 255, .8); --court-ink: #FFFFFF; --alley-dim: rgba(0, 0, 0, .25);
+    --shuttle: #F2C230; --shuttle-deep: #F2C230; --shuttle-ink: #2A2000; --score-bg: #F3F6F1; --score-ink: #14201A;
+    --men: #93B2F2; --women: #CFA2EE; --ok: #5DBF88; --warn: #E8A660; --danger: #F2857A; --on-danger: #2A0A06; --focus: #8EB6FF;
+    --scrim: rgba(0, 0, 0, .6); --toast-bg: #E3EBE5; --toast-ink: #14201A; --toast-action: #7A5600;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 22px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1411; --surface: #151F1A; --surface-2: #1B2821; --ink: #E3EBE5; --muted: #9AA9A1; --rule: #2A3832; --link: #7DD3A9;
+  --court: #226148; --court-deep: #1A4B38; --court-line: rgba(255, 255, 255, .8); --court-ink: #FFFFFF; --alley-dim: rgba(0, 0, 0, .25);
+  --shuttle: #F2C230; --shuttle-deep: #F2C230; --shuttle-ink: #2A2000; --score-bg: #F3F6F1; --score-ink: #14201A;
+  --men: #93B2F2; --women: #CFA2EE; --ok: #5DBF88; --warn: #E8A660; --danger: #F2857A; --on-danger: #2A0A06; --focus: #8EB6FF;
+  --scrim: rgba(0, 0, 0, .6); --toast-bg: #E3EBE5; --toast-ink: #14201A; --toast-action: #7A5600;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 22px rgba(0, 0, 0, .3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--surface);
+}
+body.noscroll { overflow: hidden; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+p { margin: 0; }
+.wrap {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* ---------- Title bar ---------- */
+.topbar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar .wrap { display: flex; align-items: center; gap: 10px; min-height: 56px; padding-block: 6px; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; min-width: 0; }
+.mark { width: 30px; height: 30px; flex: none; }
+.mark .skirt { fill: var(--shuttle); stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+.mark .rib { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; }
+.mark .cork { fill: var(--surface); stroke: var(--ink); stroke-width: 1.6; }
+.brand-name { display: block; font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: .9; letter-spacing: .06em; text-transform: uppercase; font-style: italic; }
+.brand-sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+.sync {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 32px; padding: 0 11px;
+  border-radius: 999px; border: 1px solid var(--rule);
+  background: var(--surface-2); color: var(--muted);
+  font-size: 12.5px; font-weight: 700; white-space: nowrap;
+}
+.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.sync[data-s="saved"] .dot { background: var(--ok); }
+.sync[data-s="saving"] .dot, .sync[data-s="loading"] .dot { background: var(--shuttle); }
+.sync[data-s="offline"] .dot, .sync[data-s="error"] .dot { background: var(--warn); }
+.icon-btn {
+  display: inline-grid; place-items: center;
+  width: 40px; height: 40px; flex: none;
+  border-radius: 10px; border: 1px solid transparent;
+  background: transparent; color: var(--ink);
+}
+.icon-btn:hover { background: var(--surface-2); }
+.icon-btn .i { width: 22px; height: 22px; }
+@media (max-width: 419px) { .brand-sub { display: none; } }
+@media (max-width: 359px) { .sync .sync-label { display: none; } }
+
+/* ---------- Tabs ---------- */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tabs .wrap { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; padding-block: 6px; }
+.tab[hidden] { display: none; }
+@media (max-width: 419px) { .tabs.five .wrap { gap: 2px; } .tabs.five .tab { font-size: 11px; } }
+.tab {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 2px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--muted);
+  font-size: 12px; font-weight: 700;
+}
+.tab .i { width: 24px; height: 24px; }
+.tab[aria-current="page"] { color: var(--ink); background: var(--surface-2); }
+.tab[aria-current="page"] .i { color: var(--link); }
+.badge {
+  position: absolute; top: 2px; left: calc(50% + 6px);
+  min-width: 19px; height: 19px; padding: 0 5px;
+  display: grid; place-items: center;
+  border-radius: 10px; background: var(--shuttle); color: var(--shuttle-ink);
+  font-size: 11px; font-weight: 700; line-height: 1;
+}
+@media (min-width: 900px) {
+  .tabs {
+    position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--topbar-h)); bottom: auto;
+    border-top: 0; border-bottom: 1px solid var(--rule); padding-bottom: 0; z-index: 19;
+  }
+  .tabs .wrap { display: flex; gap: 6px; }
+  .tab { flex-direction: row; gap: 8px; padding: 8px 14px; font-size: 14px; }
+  .tab .i { width: 20px; height: 20px; }
+  .badge { position: static; }
+}
+
+/* ---------- Page ---------- */
+.banner-slot { padding-top: 14px; }
+main { display: grid; gap: 18px; padding-block: 18px 104px; align-content: start; }
+@media (min-width: 900px) { main { padding-block: 24px 56px; } }
+.view-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.view-head > div { flex: 1 1 240px; min-width: 0; }
+.h-display {
+  margin: 0;
+  font-family: var(--font-display); font-weight: 800; font-size: 38px; line-height: .95;
+  letter-spacing: .01em; text-transform: uppercase; text-wrap: balance;
+}
+.h-section {
+  margin: 0;
+  font-family: var(--font-display); font-weight: 700; font-size: 21px; line-height: 1.05;
+  letter-spacing: .04em; text-transform: uppercase; text-wrap: balance;
+}
+.lead { color: var(--muted); margin-top: 6px; max-width: 62ch; }
+.label { font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hint { font-size: 13px; color: var(--muted); max-width: 62ch; }
+.sexcolor-H { color: var(--men); }
+.sexcolor-F { color: var(--women); }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; }
+.pad { padding: 14px 16px; }
+
+/* ---------- Buttons & fields ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 16px;
+  border-radius: 10px; border: 1px solid var(--rule);
+  background: var(--surface); color: var(--ink);
+  font-weight: 700; text-align: center;
+}
+.btn:hover { background: var(--surface-2); }
+.btn .i { width: 18px; height: 18px; }
+.btn-primary { background: var(--shuttle); color: var(--shuttle-ink); border-color: transparent; }
+.btn-primary:hover { background: var(--shuttle); filter: brightness(.95); }
+.btn-court { background: var(--court); color: var(--court-ink); border-color: transparent; }
+.btn-court:hover { background: var(--court-deep); }
+.btn-danger { color: var(--danger); }
+.btn-danger-solid { background: var(--danger); color: var(--on-danger); border-color: transparent; }
+.btn-danger-solid:hover { background: var(--danger); filter: brightness(.95); }
+.btn-block { width: 100%; }
+.btn-lg { min-height: 52px; font-size: 16.5px; }
+.btn-small { min-height: 36px; padding: 0 12px; font-size: 13.5px; }
+.btn.is-waiting, .btn[aria-disabled="true"] { background: var(--surface-2); color: var(--muted); border-color: var(--rule); filter: none; }
+.btn-link {
+  background: none; border: 0; padding: 8px 4px; min-height: 40px;
+  color: var(--link); font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.btn-link.danger { color: var(--danger); }
+.field {
+  width: 100%; min-width: 0; min-height: 44px; padding: 0 12px;
+  border-radius: 10px; border: 1px solid var(--rule);
+  background: var(--surface); color: var(--ink);
+  font-size: 16px;
+}
+textarea.field { padding: 10px 12px; min-height: 124px; resize: vertical; line-height: 1.4; }
+.field:focus { border-color: var(--focus); outline: 2px solid color-mix(in srgb, var(--focus) 30%, transparent); outline-offset: 0; }
+.seg { display: inline-flex; gap: 3px; padding: 3px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--rule); flex: none; }
+.seg button {
+  min-height: 36px; min-width: 40px; padding: 0 12px;
+  border: 0; border-radius: 8px; background: transparent;
+  color: var(--muted); font-weight: 700;
+}
+.seg button[aria-checked="true"], .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.seg button[data-sex="H"][aria-checked="true"] { color: var(--men); }
+.seg button[data-sex="F"][aria-checked="true"] { color: var(--women); }
+.seg .count { font-weight: 400; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.switch { position: relative; display: inline-flex; align-items: center; flex: none; }
+.switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.switch .track { position: relative; width: 44px; height: 26px; border-radius: 13px; background: var(--rule); transition: background .15s; }
+.switch .track::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--surface); box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  transition: transform .15s;
+}
+.switch input:checked + .track { background: var(--court); }
+.switch input:checked + .track::after { transform: translateX(18px); }
+.switch input:focus-visible + .track { outline: 3px solid var(--focus); outline-offset: 2px; }
+.switch input:disabled { cursor: default; }
+
+/* ---------- Players ---------- */
+.addbar { display: flex; gap: 8px; align-items: center; }
+.addbar .field { flex: 1 1 auto; }
+.form-msg { margin-top: -8px; font-size: 13.5px; color: var(--warn); }
+.paste summary { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; cursor: pointer; font-weight: 700; color: var(--link); list-style: none; }
+.paste summary::-webkit-details-marker { display: none; }
+.paste summary::before { content: "+"; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; border: 1px solid currentColor; font-size: 14px; line-height: 1; }
+.paste[open] summary::before { content: "−"; }
+.paste-body { display: grid; gap: 10px; margin-top: 6px; }
+.paste-body .btn { justify-self: start; }
+.formatbox { display: grid; gap: 2px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--rule); background: var(--surface-2); }
+.formatbox strong { font-size: 16px; }
+.pgroup { overflow: hidden; }
+.pgroup-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 12px 14px 8px; }
+.plist { list-style: none; margin: 0; padding: 0; }
+.prow { display: flex; align-items: center; gap: 8px; min-height: 54px; padding: 6px 8px 6px 12px; border-top: 1px solid var(--rule); }
+.sex { width: 32px; height: 32px; flex: none; border: 0; border-radius: 8px; font-weight: 700; font-size: 13px; }
+.sex-H { background: color-mix(in srgb, var(--men) 14%, transparent); color: var(--men); }
+.sex-F { background: color-mix(in srgb, var(--women) 14%, transparent); color: var(--women); }
+.sex:disabled { cursor: default; }
+.pname-input {
+  flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 0 8px;
+  border: 1px solid transparent; border-radius: 8px; background: transparent;
+  font-size: 16px; font-weight: 700; color: var(--ink);
+}
+.pname-input:not([readonly]):hover { border-color: var(--rule); }
+.pname-input:focus { border-color: var(--focus); background: var(--surface); outline: none; }
+.pmeta { font-size: 12.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.prow.absent .pname-input { color: var(--muted); font-weight: 400; }
+.del-spacer { width: 40px; flex: none; }
+.del .i { width: 18px; height: 18px; color: var(--muted); }
+.empty { display: grid; gap: 12px; }
+.mode-panel { display: grid; gap: 8px; }
+.mode-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; }
+.seg-wide { display: flex; flex: 1 1 250px; max-width: 380px; }
+.seg-wide button { flex: 1 1 0; }
+
+/* ---------- Équipes fixes ---------- */
+.team-tools { display: grid; gap: 6px; }
+.teams { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+@media (min-width: 600px) { .teams { grid-template-columns: 1fr 1fr; } }
+.tcard { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--rule); background: var(--surface); }
+.tno { flex: none; width: 36px; font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1; text-align: center; color: var(--link); font-variant-numeric: tabular-nums; }
+.tcard-off .tno { color: var(--muted); }
+.tplayers { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tstat { flex: none; font-size: 12.5px; color: var(--muted); white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+.free-box { display: grid; gap: 10px; }
+.free-box .btn { justify-self: start; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center;
+  min-height: 40px; max-width: 100%; padding: 0 13px 0 11px;
+  border-radius: 999px; border: 1px solid var(--rule);
+  background: var(--surface-2); color: var(--ink);
+  font-weight: 700; font-size: 15px; text-align: left; overflow-wrap: anywhere;
+}
+.chip .sexdot { flex: none; }
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--shuttle); color: var(--shuttle-ink); border-color: var(--shuttle-deep); }
+.chip.off { color: var(--muted); font-weight: 400; }
+.chip-note { margin-left: 6px; font-size: 12px; font-weight: 400; }
+.chip-empty { border-style: dashed; background: transparent; color: var(--link); }
+.chip:disabled { cursor: default; }
+
+/* ---------- Rounds & courts ---------- */
+.round-nav { display: flex; gap: 6px; overflow-x: auto; padding: 2px; margin: -2px; scrollbar-width: none; }
+.round-nav::-webkit-scrollbar { display: none; }
+.rchip {
+  flex: none; min-width: 44px; height: 38px; padding: 0 12px;
+  border-radius: 999px; border: 1px solid var(--rule); background: var(--surface);
+  font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.rchip.done::after { content: "✓"; margin-left: 4px; font-family: var(--font-body); font-size: 12px; color: var(--ok); }
+.rchip[aria-current="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.rchip[aria-current="true"].done::after { color: inherit; }
+.round-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.matches { display: grid; gap: 20px; }
+@media (min-width: 660px) { .matches { grid-template-columns: 1fr 1fr; } }
+.match { display: grid; gap: 6px; min-width: 0; }
+.match-head { display: flex; align-items: center; gap: 8px; min-height: 28px; }
+.court-no { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: .05em; text-transform: uppercase; line-height: 1; }
+.fmt { font-size: 13px; color: var(--muted); }
+.status {
+  margin-left: auto; padding: 3px 9px;
+  border-radius: 999px; border: 1px solid var(--rule);
+  font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap;
+}
+.status[data-s="done"] { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.status[data-s="partial"], .status[data-s="tie"] { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.court {
+  position: relative;
+  display: block;
+  width: 100%; max-width: 100%;
+  aspect-ratio: 1420 / 690;
+  border-radius: 8px;
+  background: var(--court-deep);
+  color: var(--court-ink);
+}
+.court-svg { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 8px; }
+.court-svg .c-floor { fill: var(--court); }
+.court-svg .c-alley { fill: transparent; }
+.court.is-single .c-alley { fill: var(--alley-dim); }
+.court-svg .c-line { fill: none; stroke: var(--court-line); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.court-svg .c-net { fill: none; stroke: var(--court-line); stroke-width: 3px; vector-effect: non-scaling-stroke; }
+/* Une moitié de terrain par équipe. Chaque partenaire est placé au centre de son carré de service
+   (entre la ligne de fond et la ligne de service court, de part et d'autre de la ligne médiane) ;
+   les deux scores sont réunis au filet. --nx = centre horizontal du carré dans la moitié (472 / 2 + 40 sur 710 unités) */
+.side {
+  position: absolute; top: 0; bottom: 0; z-index: 1; width: 50%; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px;
+}
+.side-a { left: 0; --nx: 38.9%; }
+.side-b { right: 0; --nx: 61.1%; }
+.names {
+  display: flex; flex-direction: column; align-items: center; gap: 1px; max-width: 100%; min-width: 0; text-align: center;
+  /* halo couleur terrain : les lignes s'effacent derrière les prénoms */
+  text-shadow: 0 0 1px var(--court), 0 0 3px var(--court), 0 0 5px var(--court), 0 0 8px var(--court);
+}
+.pn { font-weight: 700; font-size: 16px; line-height: 1.15; overflow-wrap: anywhere; }
+@media (max-width: 380px) { .pn { font-size: 15px; } }
+.side > .pn {
+  position: absolute; left: var(--nx); top: 29%; transform: translate(-50%, -50%);
+  width: max-content; max-width: 56%; text-align: center;
+  font-size: 17px;
+  text-shadow: 0 0 1px var(--court), 0 0 3px var(--court), 0 0 5px var(--court), 0 0 8px var(--court);
+}
+.side > .pn-2 { top: 71%; }
+.court.is-single .side > .pn-1 { top: 42%; font-size: 19px; }
+@media (max-width: 380px) { .side > .pn { font-size: 15.5px; } .court.is-single .side > .pn-1 { font-size: 17px; } }
+.seedtag { margin-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .85; }
+.side > .seedtag {
+  position: absolute; left: var(--nx); top: 50%; transform: translate(-50%, -50%);
+  max-width: 62%; margin: 0; padding: 1px 7px; border-radius: 999px;
+  background: var(--court-deep); opacity: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 10.5px; line-height: 1.5;
+}
+.court.is-single .side > .seedtag { top: 64%; }
+.wintag {
+  visibility: hidden;
+  padding: 1px 7px; border-radius: 4px;
+  background: var(--shuttle); color: var(--shuttle-ink);
+  font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3;
+}
+.side > .wintag { position: absolute; left: var(--nx); top: 0; transform: translate(-50%, -50%); white-space: nowrap; }
+.wintag.on { visibility: visible; }
+.side.win > .pn { color: var(--shuttle); }
+.side.lose > .pn, .side.lose > .seedtag, .side.lose .names { opacity: .72; }
+.scoreboard {
+  position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 3px; padding: 4px;
+  border-radius: 12px; background: var(--court-deep);
+  box-shadow: 0 0 0 1.5px var(--court-line), 0 4px 10px rgba(0, 0, 0, .25);
+}
+.scoreboard .sep { width: 8px; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1; color: var(--court-ink); }
+.score {
+  width: 50px; height: 46px; padding: 0;
+  border: 0; border-radius: 9px;
+  background: var(--score-bg); color: var(--score-ink);
+  font-family: var(--font-display); font-weight: 800; font-size: 30px; line-height: 1;
+  text-align: center; font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .2);
+}
+.score.is-win { background: var(--shuttle); color: var(--shuttle-ink); }
+@media (max-width: 380px) { .score { width: 46px; height: 42px; font-size: 27px; } }
+.score::placeholder { color: color-mix(in srgb, var(--score-ink) 30%, transparent); }
+.score:focus { outline: 3px solid var(--shuttle); outline-offset: 2px; }
+.score[readonly] { box-shadow: none; }
+.match-msg { font-size: 13px; color: var(--warn); font-weight: 700; }
+.match[data-s="bad"] .score, .match[data-s="tie"] .score { box-shadow: 0 0 0 3px var(--shuttle); }
+.court.is-locked .score { background: color-mix(in srgb, var(--score-bg) 82%, transparent); box-shadow: none; }
+.court.is-locked .score.is-win { background: var(--shuttle); }
+.lockbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--rule); background: var(--surface); }
+.lockbar .hint { flex: 1 1 220px; }
+.lockbar.is-open { border-color: color-mix(in srgb, var(--shuttle-deep) 60%, var(--rule)); background: color-mix(in srgb, var(--shuttle) 14%, var(--surface)); }
+.rchip.warn::after { content: "!"; margin-left: 4px; font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--warn); }
+.rchip[aria-current="true"].warn::after { color: inherit; }
+.rchip-all { font-family: var(--font-body); font-size: 14px; font-weight: 700; }
+.status[data-s="bad"] { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+
+/* ---------- Feuille de scores ---------- */
+.sheet-round { display: grid; gap: 6px; padding: 12px 14px; }
+.sr-head { display: flex; align-items: center; gap: 10px; }
+.sr-head .status { margin-left: auto; }
+.sr-head .btn-link { min-height: 32px; padding: 4px; }
+.slines { list-style: none; margin: 0; padding: 0; display: grid; }
+.sline { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.sline:first-child { border-top: 0; }
+.sl-court { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sl-a, .sl-b { min-width: 0; font-size: 14px; line-height: 1.25; color: var(--muted); overflow-wrap: anywhere; }
+.sl-a { text-align: right; }
+.sl-win { color: var(--ink); font-weight: 700; }
+.sl-tag { display: block; font-size: 11px; font-weight: 700; color: var(--link); }
+.sl-score { display: grid; justify-items: center; min-width: 62px; font-family: var(--font-display); font-weight: 800; font-size: 21px; line-height: 1; font-variant-numeric: tabular-nums; }
+.sl-score.todo { font-family: var(--font-body); font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.sl-score.warn { color: var(--warn); }
+.sl-note { margin-top: 2px; font-family: var(--font-body); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.sheet-panel .slines { padding: 2px 12px; border-radius: 12px; background: var(--surface-2); }
+.set-row-wrap { flex-wrap: wrap; padding-block: 6px; }
+
+/* ---------- Choix du format de finale ---------- */
+.final-choice { display: grid; gap: 10px; }
+.choices { display: grid; gap: 8px; }
+@media (min-width: 640px) { .choices { grid-template-columns: repeat(3, 1fr); } }
+.choice {
+  display: grid; gap: 4px; align-content: start;
+  min-height: 44px; padding: 12px 14px;
+  border-radius: 12px; border: 1px solid var(--rule);
+  background: var(--surface-2); color: var(--ink); text-align: left;
+}
+.choice-title { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.choice-title::before { content: ""; flex: none; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--muted); box-sizing: border-box; }
+.choice-desc { font-size: 13px; color: var(--muted); }
+.choice[aria-checked="true"] { border-color: var(--link); background: color-mix(in srgb, var(--link) 10%, var(--surface)); box-shadow: inset 0 0 0 1px var(--link); }
+.choice[aria-checked="true"] .choice-title::before { border-color: var(--link); background: radial-gradient(circle, var(--link) 0 3.5px, transparent 4.5px); }
+.match.flag .court { outline: 3px solid var(--shuttle-deep); outline-offset: 3px; animation: nudge .35s ease-in-out 2; }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 30% { transform: translateX(-4px); } 70% { transform: translateX(4px); } }
+.court-empty .side { opacity: .8; }
+.rest { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { padding: 4px 11px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); font-weight: 700; font-size: 14px; }
+.footer-box { display: grid; gap: 10px; padding: 14px; }
+.meter-row { display: grid; gap: 7px; }
+.meter-text { font-weight: 700; }
+.meter { display: flex; gap: 4px; }
+.meter span { flex: 1; height: 8px; border-radius: 4px; background: var(--rule); }
+.meter span.on { background: var(--ok); }
+.footer-alt { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; }
+.loading { display: grid; gap: 14px; }
+.loading .court { opacity: .55; animation: breathe 1.6s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: .35; } }
+
+/* ---------- Ranking ---------- */
+.rank-panel { overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+table.rank { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.rank th {
+  padding: 10px 8px; text-align: left; white-space: nowrap;
+  font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--rule);
+}
+.rank td { padding: 10px 8px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+.rank th:first-child, .rank td:first-child { padding-left: 14px; }
+.rank th:last-child, .rank td:last-child { padding-right: 14px; }
+.rank .num { text-align: right; white-space: nowrap; }
+.rank td.pts { font-family: var(--font-display); font-weight: 800; font-size: 21px; line-height: 1; }
+.rank td.diff { color: var(--muted); }
+.rk { width: 40px; }
+.rk span { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; font-weight: 700; }
+tr.q .rk span { background: var(--shuttle); color: var(--shuttle-ink); }
+.who { font-weight: 700; }
+@media (max-width: 559px) {
+  .rank th, .rank td { padding-left: 5px; padding-right: 5px; }
+  .rank th:first-child, .rank td:first-child { padding-left: 10px; }
+  .rank th:last-child, .rank td:last-child { padding-right: 12px; }
+}
+.sexdot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; vertical-align: 1px; }
+.sexdot-H { background: var(--men); }
+.sexdot-F { background: var(--women); }
+.srank { margin-left: 6px; padding: 1px 5px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+.srank-H { color: var(--men); background: color-mix(in srgb, var(--men) 12%, transparent); }
+.srank-F { color: var(--women); background: color-mix(in srgb, var(--women) 12%, transparent); }
+.srank-T { color: var(--link); background: color-mix(in srgb, var(--link) 12%, transparent); white-space: nowrap; }
+.gone-tag { margin-left: 6px; font-size: 11.5px; font-weight: 400; color: var(--muted); }
+tr.gone .who { color: var(--muted); }
+tr.r-row { cursor: pointer; }
+tr.r-row:hover td { background: var(--surface-2); }
+tr.r-detail td { padding-top: 0; font-size: 13.5px; color: var(--muted); background: var(--surface-2); }
+tr.r-row[aria-expanded="true"] td { background: var(--surface-2); border-bottom-color: transparent; }
+.rank-nav { align-items: center; }
+.rank-nav .label { flex: none; margin-right: 4px; }
+.rank .mv { width: 44px; padding-left: 2px; padding-right: 2px; text-align: center; white-space: nowrap; font-size: 13px; font-weight: 700; }
+.rank th.mv { font-size: 10px; }
+.rank.no-mv .mv { display: none; }
+.mv-i { width: 9px; height: 9px; margin-right: 2px; fill: currentColor; vertical-align: 0; }
+.mv-up { color: var(--ok); }
+.mv-down { color: var(--danger); }
+.mv-down .mv-i { transform: rotate(180deg); }
+.mv-eq { color: var(--muted); font-weight: 400; }
+.mv-new { color: var(--link); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+.rank td.ga-pos { color: var(--ok); }
+.rank td.ga-neg { color: var(--danger); }
+.rank td.ga { font-weight: 700; }
+.mh { list-style: none; margin: 8px 0 2px; padding: 0; display: grid; gap: 3px; }
+.mh li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.mh-r { min-width: 30px; font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--ink); }
+.res { padding: 0 6px; border-radius: 4px; font-size: 11.5px; font-weight: 700; }
+.res-V { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.res-D { color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.res-N { color: var(--muted); background: var(--surface); }
+tr.cut td { padding: 8px 14px; border-bottom: 2px dashed var(--shuttle-deep); font-size: 12px; font-weight: 700; color: var(--muted); }
+@media (max-width: 559px) { .hide-sm { display: none; } }
+.rank-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+
+/* ---------- Finals ---------- */
+.prev { display: grid; gap: 2px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.prev:first-of-type { border-top: 0; }
+.vs { color: var(--muted); }
+.final { display: grid; gap: 12px; }
+.champ {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 12px;
+  background: color-mix(in srgb, var(--shuttle) 16%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--shuttle) 50%, var(--rule));
+}
+.champ .i { width: 42px; height: 42px; color: var(--shuttle-deep); stroke-width: 1.6; }
+.champ-names { font-family: var(--font-display); font-weight: 800; font-size: 30px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+.actions { display: grid; gap: 10px; }
+@media (min-width: 560px) { .actions { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } }
+.hist { list-style: none; margin: 0; padding: 0; }
+.hist li { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--rule); }
+@media (max-width: 440px) { .hist li { grid-template-columns: 1fr; gap: 2px; } }
+.hist-date { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- Banner, sheet, toast ---------- */
+.banner {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+  padding: 12px 14px; border-radius: 12px;
+  background: color-mix(in srgb, var(--shuttle) 22%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--shuttle) 55%, var(--rule));
+}
+.banner p { flex: 1 1 220px; }
+.banner-quiet { background: var(--surface); border-color: var(--rule); }
+.sheet { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: var(--scrim); }
+.sheet-panel {
+  width: 100%; max-width: 560px; max-height: calc(100% - 24px); overflow-y: auto;
+  display: grid; gap: 16px; align-content: start;
+  padding-top: 14px; padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-radius: 18px 18px 0 0;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+@media (min-width: 700px) {
+  .sheet { align-items: center; padding: 24px; }
+  .sheet-panel { border-radius: 16px; padding-bottom: 22px; }
+}
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.set-group { display: grid; gap: 2px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.set-group > summary { cursor: pointer; min-height: 36px; display: flex; align-items: center; list-style: none; }
+.set-group > summary::-webkit-details-marker { display: none; }
+.set-group > summary::after { content: "+"; margin-left: 8px; font-size: 15px; }
+.set-group[open] > summary::after { content: "−"; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 52px; }
+.set-row > label { display: grid; gap: 2px; font-weight: 700; }
+.set-row > label .hint { font-weight: 400; }
+.num-field { width: 86px; flex: none; text-align: center; font-variant-numeric: tabular-nums; }
+.stepper { display: inline-flex; align-items: center; flex: none; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.stepper button { width: 44px; height: 44px; border: 0; background: var(--surface-2); font-size: 20px; font-weight: 700; }
+.stepper output { min-width: 100px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sheet-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.danger-zone { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.copy-area { min-height: 220px; font-size: 15px; }
+.toast {
+  position: fixed; z-index: 60;
+  left: 50%; transform: translateX(-50%);
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  width: max-content; max-width: calc(100% - 32px);
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 10px 10px 16px; border-radius: 12px;
+  background: var(--toast-bg); color: var(--toast-ink);
+  box-shadow: var(--shadow); font-weight: 700;
+}
+.toast button { flex: none; min-height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--toast-action); font-weight: 700; }
+@media (min-width: 900px) { .toast { bottom: 24px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="skirt" d="M8.5 3.5h15l-4 15.5h-7z"/>
+        <path class="rib" d="M13.6 3.8l1.4 15M18.4 3.8L17 18.8M10.3 9.5h11.4M11.6 14.5h8.8"/>
+        <path class="cork" d="M12.2 19h7.6v2.6a3.8 3.8 0 0 1-7.6 0z"/>
+      </svg>
+      <div><span class="brand-name">Smash</span><span class="brand-sub">Tournois de badminton</span></div>
+    </div>
+    <button class="sync" id="sync" type="button" data-act="sync-info" data-s="loading" aria-label="Sauvegarde : connexion"><span class="dot" aria-hidden="true"></span><span class="sync-label">Connexion…</span></button>
+    <button class="icon-btn" type="button" data-act="settings" aria-label="Réglages">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap">
+    <button class="tab" type="button" data-act="tab" data-tab="joueurs">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.6 14.3c2.6-.3 4.8 1.2 5.4 4.4"/></svg>
+      <span>Joueurs</span>
+    </button>
+    <button class="tab" type="button" data-act="tab" data-tab="equipes" id="tab-equipes" hidden>
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.6" cy="12" r="5.6"/><circle cx="15.4" cy="12" r="5.6"/></svg>
+      <span>Équipes</span>
+    </button>
+    <button class="tab" type="button" data-act="tab" data-tab="matchs">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="1"/><path d="M12 3.5v17M8.6 5.5v13M15.4 5.5v13M2.5 12h6.1M15.4 12h6.1"/></svg>
+      <span>Matchs</span><span class="badge" id="badge-matchs" hidden></span>
+    </button>
+    <button class="tab" type="button" data-act="tab" data-tab="classement">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20v-8h4v8M10 20V5h4v15M15 20v-5h4v5"/></svg>
+      <span>Classement</span>
+    </button>
+    <button class="tab" type="button" data-act="tab" data-tab="finales">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/></svg>
+      <span>Finales</span>
+    </button>
+  </div>
+</nav>
+
+<div class="wrap banner-slot" id="banner" hidden></div>
+<main class="wrap" id="main"></main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-panel" id="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+"use strict";
+
+/* LOGIC-START */
+const DEFAULTS = Object.freeze({
+  winPts: 3, lossPts: 0, drawPts: 1, allowDraw: false,
+  courts: 0, fillSingles: true,
+  partnerWeight: 250, opponentWeight: 35, tries: 4000,
+  teamMode: "melee", mixedTeams: false,
+  scoreFormat: 21,
+  finalFormat: "sexes"
+});
+/* Formats de finale en mêlée (voir buildFinals) */
+const FINAL_FORMATS = ["sexes", "mixte", "general"];
+/* Format d'un match : points pour gagner le set → score maximal (2 points d'écart jusqu'au plafond). 0 = libre */
+const SCORE_FORMATS = [21, 15, 11, 0];
+const SCORE_CAP = { 11: 15, 15: 21, 21: 30 };
+
+function emptyState() {
+  return { v: 1, updatedAt: 0, exemple: false, nextId: 1, players: [], teams: [], rounds: [], finals: null, history: [], settings: Object.assign({}, DEFAULTS) };
+}
+
+function clampInt(v, lo, hi, def) {
+  const n = Math.round(Number(v));
+  return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : def;
+}
+
+function normSettings(s) {
+  s = s && typeof s === "object" ? s : {};
+  return {
+    winPts: clampInt(s.winPts, 0, 20, DEFAULTS.winPts),
+    lossPts: clampInt(s.lossPts, 0, 20, DEFAULTS.lossPts),
+    drawPts: clampInt(s.drawPts, 0, 20, DEFAULTS.drawPts),
+    allowDraw: s.allowDraw === true,
+    courts: clampInt(s.courts, 0, 40, DEFAULTS.courts),
+    fillSingles: s.fillSingles !== false,
+    partnerWeight: clampInt(s.partnerWeight, 0, 100000, DEFAULTS.partnerWeight),
+    opponentWeight: clampInt(s.opponentWeight, 0, 100000, DEFAULTS.opponentWeight),
+    tries: clampInt(s.tries, 100, 20000, DEFAULTS.tries),
+    teamMode: s.teamMode === "fixed" ? "fixed" : "melee",
+    mixedTeams: s.mixedTeams === true,
+    scoreFormat: SCORE_FORMATS.includes(Number(s.scoreFormat)) && s.scoreFormat !== null && s.scoreFormat !== "" ? Number(s.scoreFormat) : DEFAULTS.scoreFormat,
+    finalFormat: FINAL_FORMATS.includes(s.finalFormat) ? s.finalFormat : DEFAULTS.finalFormat
+  };
+}
+
+function scoreVal(v) {
+  if (v === null || v === undefined || v === "") return null;
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 0 && n <= 99 ? n : null;
+}
+
+function idList(a, ok) {
+  return Array.isArray(a) ? a.filter(id => typeof id === "string" && ok.has(id)) : [];
+}
+
+function strList(a) {
+  return Array.isArray(a) ? a.filter(x => typeof x === "string").map(x => x.slice(0, 30)).slice(0, 2) : [];
+}
+
+function normFinal(f, ok) {
+  if (!f || typeof f !== "object") return null;
+  const a = idList(f.a, ok).slice(0, 2), b = idList(f.b, ok).slice(0, 2);
+  if (!a.length || a.length !== b.length) return null;
+  const seeds = (s, n, def) => Array.isArray(s) && s.length === n ? s.map(x => clampInt(x, 1, 99, 1)) : def;
+  return {
+    a, b,
+    seedA: seeds(f.seedA, a.length, a.length === 2 ? [1, 4] : [1]),
+    seedB: seeds(f.seedB, b.length, b.length === 2 ? [2, 3] : [2]),
+    sa: scoreVal(f.sa), sb: scoreVal(f.sb)
+  };
+}
+
+function normTeamFinal(f, ok, tok) {
+  if (!f || typeof f !== "object" || !tok.has(f.ta) || !tok.has(f.tb) || f.ta === f.tb) return null;
+  const a = idList(f.a, ok).slice(0, 2), b = idList(f.b, ok).slice(0, 2);
+  if (!a.length || !b.length) return null;
+  return { ta: f.ta, tb: f.tb, a, b, seedA: [1], seedB: [2], sa: scoreVal(f.sa), sb: scoreVal(f.sb) };
+}
+
+function normalizeState(raw) {
+  const st = emptyState();
+  if (!raw || typeof raw !== "object") return st;
+  st.updatedAt = Number(raw.updatedAt) || 0;
+  st.exemple = raw.exemple === true;
+  st.settings = normSettings(raw.settings);
+  const seen = new Set();
+  st.players = (Array.isArray(raw.players) ? raw.players : [])
+    .filter(p => p && typeof p.id === "string" && p.id && !seen.has(p.id) && seen.add(p.id))
+    .map(p => ({ id: p.id, name: String(p.name || "?").slice(0, 30), sex: p.sex === "F" ? "F" : "H", active: p.active !== false }));
+  const ok = new Set(st.players.map(p => p.id));
+  let maxN = 0;
+  st.players.forEach(p => { const n = parseInt(p.id.replace(/\D/g, ""), 10); if (n > maxN) maxN = n; });
+  st.nextId = Math.max(clampInt(raw.nextId, 1, 1e9, 1), maxN + 1);
+  /* Équipes fixes : deux joueurs au plus, chaque joueur dans une seule équipe */
+  const inTeam = new Set(), tseen = new Set();
+  st.teams = (Array.isArray(raw.teams) ? raw.teams : [])
+    .filter(t => t && typeof t.id === "string" && /^t\d{1,4}$/.test(t.id) && !tseen.has(t.id) && tseen.add(t.id))
+    .map(t => {
+      const p = [];
+      idList(t.p, ok).forEach(id => { if (p.length < 2 && !inTeam.has(id)) { inTeam.add(id); p.push(id); } });
+      return { id: t.id, p };
+    });
+  const tok = new Set(st.teams.map(t => t.id));
+  st.rounds = (Array.isArray(raw.rounds) ? raw.rounds : [])
+    .filter(r => r && typeof r === "object")
+    .map((r, i) => {
+      const rd = {
+        n: i + 1,
+        rest: idList(r.rest, ok),
+        matches: (Array.isArray(r.matches) ? r.matches : [])
+          .filter(m => m && typeof m === "object")
+          .map((m, j) => {
+            const x = { court: clampInt(m.court, 1, 99, j + 1), a: idList(m.a, ok).slice(0, 2), b: idList(m.b, ok).slice(0, 2), sa: scoreVal(m.sa), sb: scoreVal(m.sb) };
+            if (tok.has(m.ta) && tok.has(m.tb) && m.ta !== m.tb) { x.ta = m.ta; x.tb = m.tb; }
+            return x;
+          })
+          .filter(m => m.a.length && m.a.length === m.b.length)
+      };
+      const rt = idList(r.rt, tok);
+      if (rt.length) rd.rt = rt;
+      return rd;
+    });
+  if (raw.finals && typeof raw.finals === "object") {
+    const H = normFinal(raw.finals.H, ok), F = normFinal(raw.finals.F, ok), T = normTeamFinal(raw.finals.T, ok, tok);
+    const X = normFinal(raw.finals.X, ok), G = normFinal(raw.finals.G, ok);
+    st.finals = H || F || T || X || G ? { H, F, T, X, G, date: String(raw.finals.date || "").slice(0, 10), afterRound: clampInt(raw.finals.afterRound, 0, 999, 0) } : null;
+  }
+  const usedTeams = teamsInPlay(st);
+  st.teams = st.teams.filter(t => t.p.length || usedTeams.has(t.id));
+  /* État d'avant le contrôle des scores : on garde « libre » si un score déjà saisi ne respecte pas les 21 points */
+  if (!raw.settings || raw.settings.scoreFormat === undefined) {
+    const R = { allowDraw: st.settings.allowDraw, scoreFormat: 21 };
+    const all = [].concat.apply([], st.rounds.map(r => r.matches));
+    if (st.finals) ["H", "F", "T", "X", "G"].forEach(k => { if (st.finals[k]) all.push(st.finals[k]); });
+    st.settings.scoreFormat = all.some(m => m.sa != null && m.sb != null && scoreProblem(m.sa, m.sb, R)) ? 0 : 21;
+  }
+  st.history = (Array.isArray(raw.history) ? raw.history : [])
+    .filter(h => h && typeof h === "object").slice(0, 30)
+    .map(h => ({ date: String(h.date || "").slice(0, 10), players: clampInt(h.players, 0, 999, 0), rounds: clampInt(h.rounds, 0, 999, 0), H: strList(h.H), F: strList(h.F), T: strList(h.T), X: strList(h.X), G: strList(h.G) }));
+  return st;
+}
+
+/* Équipes citées dans les manches ou la finale : elles restent même vides */
+function teamsInPlay(st) {
+  const used = new Set();
+  st.rounds.forEach(r => {
+    (r.rt || []).forEach(t => used.add(t));
+    r.matches.forEach(m => { if (m.ta) { used.add(m.ta); used.add(m.tb); } });
+  });
+  if (st.finals && st.finals.T) { used.add(st.finals.T.ta); used.add(st.finals.T.tb); }
+  return used;
+}
+
+function normName(s) {
+  s = String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLocaleLowerCase("fr-FR");
+  s = s.replace(/(^|[\s\-'’])(\p{L})/gu, (m, p, c) => p + c.toLocaleUpperCase("fr-FR"));
+  return s.slice(0, 30);
+}
+
+function sexOf(s) {
+  const t = String(s || "").trim().toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  if (["H", "HOMME", "M", "MASCULIN", "GARCON", "G"].includes(t)) return "H";
+  if (["F", "FEMME", "W", "DAME", "FEMININ", "FILLE"].includes(t)) return "F";
+  return null;
+}
+
+function parseRoster(text, defSex) {
+  const out = [];
+  String(text || "").split(/\r?\n/).forEach(line => {
+    if (!line.trim()) return;
+    if (line.includes("\t")) {
+      const cols = line.split("\t").map(c => c.trim()).filter(Boolean);
+      if (cols.some(c => /^pr[ée]nom$/i.test(c))) return;
+      let name = "", sex = null, active = true;
+      cols.forEach(c => {
+        const u = c.toUpperCase();
+        if (u === "OUI" || u === "NON") { active = u === "OUI"; return; }
+        if (sex === null && sexOf(c)) { sex = sexOf(c); return; }
+        if (!name && !/^\d+$/.test(c)) name = c;
+      });
+      if (name) out.push({ name: normName(name), sex: sex || defSex, active });
+      return;
+    }
+    line.split(/[;,]/).forEach(chunk => {
+      let c = chunk.trim();
+      if (!c) return;
+      let sex = defSex;
+      const m = c.match(/^(.+?)[\s:(\[\-–]+(h|f|homme|femme|fille|garçon|garcon|dame)[)\]]?$/i);
+      if (m) { c = m[1]; sex = sexOf(m[2]) || defSex; }
+      const name = normName(c);
+      if (name && !/^pr[ée]nom$/i.test(name)) out.push({ name, sex, active: true });
+    });
+  });
+  return out;
+}
+
+/* Combien de doubles, de simples et de repos pour n joueurs présents */
+function planFormat(n, courts, fill) {
+  let d = Math.floor(n / 4), s = 0;
+  if (fill && n - 4 * d >= 2) s = 1;
+  if (courts > 0) {
+    if (d > courts) d = courts;
+    if (d + s > courts) s = 0;
+  }
+  return { d, s, rest: n - 4 * d - 2 * s };
+}
+
+const pairKey = (a, b) => (a < b ? a + "|" + b : b + "|" + a);
+function bump(map, k) { map.set(k, (map.get(k) || 0) + 1); }
+
+function pairHistory(st) {
+  const H = { partner: new Map(), opp: new Map(), played: new Map(), singles: new Map(), rests: new Map(), lastRest: new Map(), lastPartner: new Set(), lastOpp: new Set() };
+  const last = st.rounds.length - 1;
+  st.rounds.forEach((r, ri) => {
+    r.rest.forEach(id => { bump(H.rests, id); H.lastRest.set(id, ri); });
+    r.matches.forEach(m => {
+      m.a.concat(m.b).forEach(id => bump(H.played, id));
+      if (m.a.length === 1) { bump(H.singles, m.a[0]); bump(H.singles, m.b[0]); }
+      [m.a, m.b].forEach(t => {
+        if (t.length === 2) {
+          const k = pairKey(t[0], t[1]);
+          bump(H.partner, k);
+          if (ri === last) H.lastPartner.add(k);
+        }
+      });
+      m.a.forEach(x => m.b.forEach(y => {
+        const k = pairKey(x, y);
+        bump(H.opp, k);
+        if (ri === last) H.lastOpp.add(k);
+      }));
+    });
+  });
+  return H;
+}
+
+function shuffle(a, rnd) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* Répartit des groupes de 4 en équipes : évite de rejouer avec le même partenaire (poids fort) ou contre les mêmes adversaires */
+function bestDoubles(ids, H, S, rnd) {
+  const n = ids.length;
+  if (n < 4) return [];
+  const wP = S.partnerWeight, wO = S.opponentWeight;
+  const pc = (a, b) => {
+    const k = pairKey(a, b), c = H.partner.get(k) || 0;
+    return c ? wP * c * c + (H.lastPartner.has(k) ? wP : 0) : 0;
+  };
+  const oc = (a, b) => {
+    const k = pairKey(a, b), c = H.opp.get(k) || 0;
+    return c ? wO * c + (H.lastOpp.has(k) ? wO : 0) : 0;
+  };
+  const split = q => {
+    const [a, b, c, d] = q;
+    let best = null, bc = Infinity;
+    [[a, b, c, d], [a, c, b, d], [a, d, b, c]].forEach(([w, x, y, z]) => {
+      const cost = pc(w, x) + pc(y, z) + oc(w, y) + oc(w, z) + oc(x, y) + oc(x, z);
+      if (cost < bc) { bc = cost; best = [[w, x], [y, z]]; }
+    });
+    return { cost: bc, teams: best };
+  };
+  const groupsNeeded = n / 4;
+  let best = null, bestCost = Infinity;
+  for (let t = 0; t < S.tries && bestCost > 0; t++) {
+    const arr = shuffle(ids.slice(), rnd);
+    const groups = [];
+    let cost = 0;
+    for (let i = 0; i + 3 < n; i += 4) {
+      const r = split(arr.slice(i, i + 4));
+      cost += r.cost;
+      groups.push(r);
+      if (cost >= bestCost) break;
+    }
+    if (groups.length === groupsNeeded && cost < bestCost) { bestCost = cost; best = groups; }
+  }
+  let improved = true, guard = 0;
+  while (improved && bestCost > 0 && guard++ < 200) {
+    improved = false;
+    for (let i = 0; i < best.length && !improved; i++) {
+      for (let j = i + 1; j < best.length && !improved; j++) {
+        const A = best[i].teams.flat(), B = best[j].teams.flat();
+        for (let x = 0; x < 4 && !improved; x++) {
+          for (let y = 0; y < 4 && !improved; y++) {
+            const A2 = A.slice(), B2 = B.slice();
+            const tmp = A2[x]; A2[x] = B2[y]; B2[y] = tmp;
+            const ra = split(A2), rb = split(B2);
+            const delta = ra.cost + rb.cost - best[i].cost - best[j].cost;
+            if (delta < 0) { bestCost += delta; best[i] = ra; best[j] = rb; improved = true; }
+          }
+        }
+      }
+    }
+  }
+  return best.map(g => shuffle(g.teams.slice(), rnd));
+}
+
+function generateRound(st, rnd) {
+  rnd = rnd || Math.random;
+  if (st.settings.teamMode === "fixed") return generateTeamRound(st, rnd);
+  const S = st.settings;
+  const active = st.players.filter(p => p.active).map(p => p.id);
+  const f = planFormat(active.length, S.courts, S.fillSingles);
+  if (f.d + f.s === 0) {
+    throw new Error(active.length < 2
+      ? "Il faut au moins 2 joueurs présents."
+      : "Pas assez de joueurs pour un double. Ajoutez des joueurs ou autorisez les simples dans les réglages.");
+  }
+  const H = pairHistory(st);
+  const g = (m, k) => m.get(k) || 0;
+  const lr = id => (H.lastRest.has(id) ? H.lastRest.get(id) : -1);
+  /* Repos : ceux qui ont le plus joué sortent en premier, chacun son tour */
+  const order = shuffle(active.slice(), rnd).sort((x, y) =>
+    (g(H.played, y) - g(H.played, x)) || (g(H.rests, x) - g(H.rests, y)) || (lr(x) - lr(y)));
+  const rest = order.slice(0, f.rest);
+  const restSet = new Set(rest);
+  let pool = shuffle(active.filter(id => !restSet.has(id)), rnd);
+  /* Simple : ceux qui en ont le moins fait, sans rejouer le même adversaire */
+  const singles = [];
+  for (let k = 0; k < f.s; k++) {
+    pool.sort((x, y) => g(H.singles, x) - g(H.singles, y));
+    const first = pool[0];
+    let bj = 1, bc = Infinity;
+    for (let j = 1; j < pool.length; j++) {
+      const c = g(H.singles, pool[j]) * 1000 + g(H.opp, pairKey(first, pool[j])) * (S.opponentWeight + 1) + rnd();
+      if (c < bc) { bc = c; bj = j; }
+    }
+    singles.push([[first], [pool[bj]]]);
+    pool = pool.filter((_, i) => i !== 0 && i !== bj);
+  }
+  const doubles = bestDoubles(pool, H, S, rnd);
+  const matches = shuffle(doubles, rnd).concat(singles)
+    .map((t, i) => ({ court: i + 1, a: t[0], b: t[1], sa: null, sb: null }));
+  return { n: st.rounds.length + 1, rest, matches };
+}
+
+/* ===== Équipes fixes ===== */
+const teamNum = id => parseInt(String(id).slice(1), 10) || 0;
+
+/* Équipes qui peuvent jouer : deux joueurs, tous deux présents */
+function activeTeams(st) {
+  const act = new Set(st.players.filter(p => p.active).map(p => p.id));
+  return st.teams.filter(t => t.p.length === 2 && t.p.every(id => act.has(id)));
+}
+
+/* Tirage des paires. Mixtes d'abord si demandé ; avec un nombre impair, un joueur reste sans équipe */
+function drawPairs(players, mixed, rnd) {
+  rnd = rnd || Math.random;
+  const pairs = [];
+  let pool;
+  if (mixed) {
+    const h = shuffle(players.filter(p => p.sex === "H").map(p => p.id), rnd);
+    const f = shuffle(players.filter(p => p.sex === "F").map(p => p.id), rnd);
+    while (h.length && f.length) pairs.push([h.pop(), f.pop()]);
+    pool = shuffle(h.concat(f), rnd);
+  } else {
+    pool = shuffle(players.map(p => p.id), rnd);
+  }
+  for (let i = 0; i + 1 < pool.length; i += 2) pairs.push([pool[i], pool[i + 1]]);
+  return { pairs: shuffle(pairs, rnd), left: pool.length % 2 ? [pool[pool.length - 1]] : [] };
+}
+
+/* Combien de matchs et d'équipes au repos pour T équipes */
+function teamFormat(T, courts) {
+  let m = Math.floor(T / 2);
+  if (courts > 0 && m > courts) m = courts;
+  return { m, rest: T - 2 * m };
+}
+
+function teamHistory(st) {
+  const H = { played: new Map(), rests: new Map(), lastRest: new Map(), meet: new Map(), lastMeet: new Set() };
+  const last = st.rounds.length - 1;
+  st.rounds.forEach((r, ri) => {
+    (r.rt || []).forEach(t => { bump(H.rests, t); H.lastRest.set(t, ri); });
+    r.matches.forEach(m => {
+      if (!m.ta || !m.tb) return;
+      bump(H.played, m.ta); bump(H.played, m.tb);
+      const k = pairKey(m.ta, m.tb);
+      bump(H.meet, k);
+      if (ri === last) H.lastMeet.add(k);
+    });
+  });
+  return H;
+}
+
+/* Appariement de coût minimal (recherche exhaustive élaguée, plafonnée à cap nœuds) */
+function minCostMatching(ids, cost, rnd, cap) {
+  const n = ids.length;
+  if (n < 2) return { cost: 0, pairs: [] };
+  const order = shuffle(ids.slice(), rnd);
+  const C = order.map(x => order.map(y => (x === y ? 0 : cost(x, y))));
+  let minC = Infinity;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (C[i][j] < minC) minC = C[i][j];
+  const half = Math.floor(n / 2);
+  const used = new Array(n).fill(false), cur = [];
+  let best = null, bestCost = Infinity, nodes = 0;
+  const dfs = acc => {
+    if (acc + minC * (half - cur.length) >= bestCost || nodes++ > cap) return;
+    let i = 0;
+    while (i < n && used[i]) i++;
+    if (i === n) { bestCost = acc; best = cur.slice(); return; }
+    used[i] = true;
+    const cand = [];
+    for (let j = i + 1; j < n; j++) if (!used[j]) cand.push(j);
+    cand.sort((x, y) => C[i][x] - C[i][y]);
+    for (let k = 0; k < cand.length && bestCost > 0; k++) {
+      const j = cand[k];
+      used[j] = true;
+      cur.push([order[i], order[j]]);
+      dfs(acc + C[i][j]);
+      cur.pop();
+      used[j] = false;
+    }
+    used[i] = false;
+  };
+  dfs(0);
+  return { cost: bestCost, pairs: best || [] };
+}
+
+/* Manche à équipes fixes : repos à tour de rôle, puis des adversaires pas encore rencontrés.
+   Quand toutes les équipes jouent, les manches d'un tournoi toutes rondes (méthode du cercle) sont proposées en premier :
+   avec les mêmes équipes, chacune rencontre toutes les autres une fois avant de revoir la même. */
+function generateTeamRound(st, rnd) {
+  rnd = rnd || Math.random;
+  const S = st.settings;
+  const teams = activeTeams(st).map(t => t.id);
+  const T = teams.length;
+  if (T < 2) throw new Error("Il faut au moins 2 équipes complètes, avec leurs deux joueurs présents.");
+  const f = teamFormat(T, S.courts);
+  const H = teamHistory(st);
+  const g = (m, k) => m.get(k) || 0;
+  const lr = t => (H.lastRest.has(t) ? H.lastRest.get(t) : -1);
+  const maxPlayed = Math.max.apply(null, teams.map(t => g(H.played, t)));
+  const minRests = Math.min.apply(null, teams.map(t => g(H.rests, t)));
+  /* Se reposer coûte cher à une équipe qui a moins joué ou déjà plus reposé que les autres */
+  const restCost = t => 1e9 * (maxPlayed - g(H.played, t)) + 1e6 * (g(H.rests, t) - minRests) + 1e3 * (lr(t) + 1);
+  const meetCost = (x, y) => {
+    const k = pairKey(x, y), c = g(H.meet, k);
+    return c ? 100 * c * c + (H.lastMeet.has(k) ? 100 : 0) : 0;
+  };
+  const cands = [];
+  if (f.rest === T % 2) {
+    const arr = teams.slice();
+    if (arr.length % 2) arr.push(null);
+    const m = arr.length;
+    for (let r = 0; r < m - 1; r++) {
+      const rot = [arr[0]];
+      for (let i = 0; i < m - 1; i++) rot.push(arr[1 + ((i + r) % (m - 1))]);
+      const pairs = [], rest = [];
+      for (let i = 0; i < m / 2; i++) {
+        const x = rot[i], y = rot[m - 1 - i];
+        if (x === null) rest.push(y); else if (y === null) rest.push(x); else pairs.push([x, y]);
+      }
+      cands.push({ rest, pairs });
+    }
+    shuffle(cands, rnd);
+  }
+  const order = shuffle(teams.slice(), rnd).sort((x, y) => restCost(x) - restCost(y));
+  const rest = order.slice(0, f.rest), restSet = new Set(rest);
+  cands.push({ rest, pairs: minCostMatching(teams.filter(t => !restSet.has(t)), meetCost, rnd, 60000).pairs });
+  let best = null, bc = Infinity;
+  cands.forEach(c => {
+    const cost = c.rest.reduce((s, t) => s + restCost(t), 0) + c.pairs.reduce((s, p) => s + meetCost(p[0], p[1]), 0);
+    if (cost < bc) { bc = cost; best = c; }
+  });
+  const byId = new Map(st.teams.map(t => [t.id, t]));
+  const matches = shuffle(best.pairs.slice(), rnd).map((p, i) => {
+    const q = rnd() < 0.5 ? p : [p[1], p[0]];
+    return { court: i + 1, a: byId.get(q[0]).p.slice(), b: byId.get(q[1]).p.slice(), sa: null, sb: null, ta: q[0], tb: q[1] };
+  });
+  const rt = best.rest.slice();
+  const round = { n: st.rounds.length + 1, rest: [].concat.apply([], rt.map(t => byId.get(t).p)), matches };
+  if (rt.length) round.rt = rt;
+  return round;
+}
+
+function computeTeamStandings(st) {
+  const S = st.settings;
+  const act = new Set(st.players.filter(p => p.active).map(p => p.id));
+  const nameOf = id => { const p = st.players.find(x => x.id === id); return p ? p.name : "?"; };
+  const rows = new Map();
+  st.teams.forEach(t => rows.set(t.id, {
+    id: t.id, p: t.p.slice(), name: t.p.length ? t.p.map(nameOf).join(" & ") : "?",
+    active: t.p.length === 2 && t.p.every(id => act.has(id)),
+    J: 0, V: 0, D: 0, N: 0, Pts: 0, PM: 0, PE: 0, Rep: 0, diff: 0, rank: 0, opp: []
+  }));
+  const add = (tid, f, a, oid) => {
+    const x = rows.get(tid);
+    if (!x) return;
+    x.J++; x.PM += f; x.PE += a;
+    if (!x.opp.includes(oid)) x.opp.push(oid);
+    if (f > a) { x.V++; x.Pts += S.winPts; }
+    else if (f < a) { x.D++; x.Pts += S.lossPts; }
+    else { x.N++; x.Pts += S.drawPts; }
+  };
+  st.rounds.forEach(r => {
+    (r.rt || []).forEach(t => { const x = rows.get(t); if (x) x.Rep++; });
+    r.matches.forEach(m => {
+      if (m.ta && m.tb && scoreState(m, S) === "done") { add(m.ta, m.sa, m.sb, m.tb); add(m.tb, m.sb, m.sa, m.ta); }
+    });
+  });
+  const list = Array.from(rows.values()).filter(x => x.active || x.J > 0);
+  list.forEach(x => { x.diff = x.PM - x.PE; });
+  list.sort(rankCmp);
+  list.forEach((x, i) => { x.rank = i + 1; });
+  return list;
+}
+
+function teamFinalSeeds(rows) {
+  return rows.filter(x => x.active && x.J > 0).slice(0, 2);
+}
+
+/* Finale à équipes fixes : 1re équipe contre 2e */
+function makeTeamFinal(st, seeds) {
+  if (seeds.length < 2) return null;
+  const tp = id => { const t = st.teams.find(x => x.id === id); return t ? t.p.slice() : []; };
+  return { ta: seeds[0].id, tb: seeds[1].id, a: tp(seeds[0].id), b: tp(seeds[1].id), seedA: [1], seedB: [2], sa: null, sb: null };
+}
+
+/* Pourquoi un score complet est impossible ("" s'il est bon). rules = { allowDraw, scoreFormat } */
+function scoreProblem(a, b, rules) {
+  const T = rules.scoreFormat || 0;
+  if (a === b) return rules.allowDraw ? "" : "Égalité impossible : il faut un vainqueur.";
+  if (!T) return "";
+  const w = Math.max(a, b), l = Math.min(a, b), C = SCORE_CAP[T] || T + 9;
+  const sc = w + "–" + l;
+  if (w > C) return `${sc} : un set s’arrête à ${C} points.`;
+  if (w < T) return `${sc} : le vainqueur doit atteindre ${T} points.`;
+  if (w === T) return l <= T - 2 ? "" : `${sc} : il faut 2 points d’écart, le set continue (${T + 1}–${T - 1}, ${T + 2}–${T}…).`;
+  if (w === C) return l >= C - 2 ? "" : `${sc} impossible : à ${C} points, l’autre a forcément ${C - 2} ou ${C - 1}.`;
+  if (l === w - 2) return "";
+  return l === w - 1 ? `${sc} : il faut 2 points d’écart, le set continue.` : `${sc} impossible : au-delà de ${T}, le set se termine avec 2 points d’écart (${w}–${w - 2}).`;
+}
+
+/* rules : réglages du tournoi ({ allowDraw, scoreFormat }) ou, comme avant, un simple booléen allowDraw */
+function scoreState(m, rules) {
+  const R = rules && typeof rules === "object" ? rules : { allowDraw: !!rules, scoreFormat: 0 };
+  const a = m.sa, b = m.sb;
+  if (a == null && b == null) return "empty";
+  if (a == null || b == null) return "partial";
+  if (a === b && !R.allowDraw) return "tie";
+  return scoreProblem(a, b, R) ? "bad" : "done";
+}
+
+function rankCmp(x, y) {
+  return (y.Pts - x.Pts) || (y.diff - x.diff) || (y.PM - x.PM) || x.name.localeCompare(y.name, "fr", { sensitivity: "base" });
+}
+
+function computeStandings(st) {
+  const S = st.settings;
+  const rows = new Map();
+  st.players.forEach(p => rows.set(p.id, { id: p.id, name: p.name, sex: p.sex, active: p.active, J: 0, V: 0, D: 0, N: 0, Pts: 0, PM: 0, PE: 0, Rep: 0, diff: 0, rank: 0, srank: 0 }));
+  const add = (team, f, a) => team.forEach(id => {
+    const x = rows.get(id);
+    if (!x) return;
+    x.J++; x.PM += f; x.PE += a;
+    if (f > a) { x.V++; x.Pts += S.winPts; }
+    else if (f < a) { x.D++; x.Pts += S.lossPts; }
+    else { x.N++; x.Pts += S.drawPts; }
+  });
+  st.rounds.forEach(r => {
+    r.rest.forEach(id => { const x = rows.get(id); if (x) x.Rep++; });
+    r.matches.forEach(m => {
+      if (scoreState(m, S) === "done") { add(m.a, m.sa, m.sb); add(m.b, m.sb, m.sa); }
+    });
+  });
+  const list = Array.from(rows.values()).filter(x => x.active || x.J > 0);
+  list.forEach(x => { x.diff = x.PM - x.PE; });
+  list.sort(rankCmp);
+  const cnt = { H: 0, F: 0 };
+  list.forEach((x, i) => { x.rank = i + 1; x.srank = ++cnt[x.sex]; });
+  return list;
+}
+
+function finalSeeds(rows, sex) {
+  return rows.filter(x => x.sex === sex && x.active && x.J > 0).slice(0, 4);
+}
+
+/* Finale directe : 1er + 4e contre 2e + 3e ; en simple 1er contre 2e s'il n'y a que 2 ou 3 qualifiés */
+function makeFinal(seeds) {
+  if (seeds.length >= 4) return { a: [seeds[0].id, seeds[3].id], b: [seeds[1].id, seeds[2].id], seedA: [1, 4], seedB: [2, 3], sa: null, sb: null };
+  if (seeds.length >= 2) return { a: [seeds[0].id], b: [seeds[1].id], seedA: [1], seedB: [2], sa: null, sb: null };
+  return null;
+}
+
+/* Double mixte équilibré : 1er homme + 2e femme contre 2e homme + 1re femme */
+function makeMixedFinal(h, f) {
+  if (h.length < 2 || f.length < 2) return null;
+  return { a: [h[0].id, f[1].id], b: [h[1].id, f[0].id], seedA: [1, 2], seedB: [2, 1], sa: null, sb: null };
+}
+
+/* Les 4 premiers du classement mixte (hommes et femmes confondus) */
+function generalSeeds(rows) {
+  return rows.filter(x => x.active && x.J > 0).slice(0, 4);
+}
+
+/* Finales selon la formule et, en mêlée, le format choisi :
+   sexes = finale hommes + finale femmes ; mixte = un double mixte (X) ; general = 1er + 4e contre 2e + 3e du classement mixte (G) */
+function buildFinals(st) {
+  const out = { H: null, F: null, T: null, X: null, G: null };
+  if (st.settings.teamMode === "fixed") { out.T = makeTeamFinal(st, teamFinalSeeds(computeTeamStandings(st))); return out; }
+  const rows = computeStandings(st), fmt = st.settings.finalFormat;
+  if (fmt === "mixte") out.X = makeMixedFinal(finalSeeds(rows, "H"), finalSeeds(rows, "F"));
+  else if (fmt === "general") out.G = makeFinal(generalSeeds(rows));
+  else { out.H = makeFinal(finalSeeds(rows, "H")); out.F = makeFinal(finalSeeds(rows, "F")); }
+  return out;
+}
+
+/* rules (facultatif) : un score de finale impossible ne désigne pas de vainqueur */
+function finalWinner(f, rules) {
+  if (!f || f.sa == null || f.sb == null || f.sa === f.sb) return null;
+  if (rules && scoreProblem(f.sa, f.sb, { allowDraw: false, scoreFormat: rules.scoreFormat })) return null;
+  return f.sa > f.sb ? "a" : "b";
+}
+/* LOGIC-END */
+
+/* ================= Application ================= */
+const LS_KEY = "melee-badminton/v1";
+const TABS = ["joueurs", "equipes", "matchs", "classement", "finales"];
+const $ = s => document.querySelector(s);
+const main = $("#main"), bannerEl = $("#banner"), sheet = $("#sheet"), sheetPanel = $("#sheet-panel"), toastEl = $("#toast"), syncBtn = $("#sync");
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let state = emptyState();
+let pending = false;          // changements locaux pas encore confirmés en ligne
+let booted = false;
+let mode = "boot";            // boot | db | local
+let readOnly = false;
+let canWrite = null;
+let dbRef = null, unsub = null;
+let remoteSeen = false;
+let loadTimer = null, writeTimer = null, retryTimer = null;
+let writing = false, writeAgain = false;
+let syncState = "loading";
+let deferredRender = false;
+let standingsCache = null;
+let toastTimer = null, toastAction = null, pendingConfirm = null, lastFocus = null;
+const ui = { tab: null, round: null, rank: "all", open: null, sex: "H", sheet: null, pasteOpen: false, pick: null, all: false, unlock: null, rankK: null };
+
+const ICON = {
+  copy: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5"/></svg>',
+  close: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  trophy: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/></svg>'
+};
+const COURT_SVG = '<svg class="court-svg" viewBox="-40 -40 1420 690" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+  '<rect class="c-floor" x="0" y="0" width="1340" height="610"/>' +
+  '<rect class="c-alley" x="0" y="0" width="1340" height="46"/><rect class="c-alley" x="0" y="564" width="1340" height="46"/>' +
+  '<path class="c-line" d="M0 0H1340V610H0Z M0 46H1340 M0 564H1340 M76 0V610 M1264 0V610 M472 0V610 M868 0V610 M0 305H472 M868 305H1340"/>' +
+  '<path class="c-net" d="M670 -24V634"/></svg>';
+const STATUS = { empty: "À jouer", partial: "Score incomplet", tie: "Égalité", bad: "À vérifier", done: "Terminé" };
+/* Finales possibles : T équipes fixes ; en mêlée G classement mixte, X double mixte, H et F par sexe */
+const FINAL_KEYS = ["T", "G", "X", "H", "F"];
+const FINAL_TITLE = { T: "Finale", G: "Finale du classement mixte", X: "Finale double mixte", H: "Finale hommes", F: "Finale femmes" };
+const FF = {
+  sexes: { title: "Hommes et femmes", desc: "Deux finales : 1er + 4e contre 2e + 3e chez les hommes, et pareil chez les femmes.", lead: "Finale directe en double : le 1er et le 4e du classement contre le 2e et le 3e, chez les hommes et chez les femmes." },
+  mixte: { title: "Double mixte", desc: "Une finale : 1er homme + 2e femme contre 2e homme + 1re femme.", lead: "Finale en double mixte : le 1er homme et la 2e femme contre le 2e homme et la 1re femme." },
+  general: { title: "Classement mixte", desc: "Une finale : 1er + 4e contre 2e + 3e du classement mixte, hommes et femmes confondus.", lead: "Finale du classement mixte : le 1er et le 4e contre le 2e et le 3e, hommes et femmes confondus." },
+  team: { title: "Équipes", desc: "", lead: "Finale directe : la 1re équipe du classement contre la 2e." }
+};
+/* Format des finales déjà créées (d'après leur contenu), sinon celui qui s'appliquera */
+function finalsFormat() {
+  const F = state.finals;
+  if (F) return F.T ? "team" : F.X ? "mixte" : F.G ? "general" : "sexes";
+  return fixed() ? "team" : state.settings.finalFormat;
+}
+const SYNC_LABEL = { loading: "Connexion…", saving: "Enregistrement…", saved: "Enregistré", local: "Sur cet appareil", offline: "Hors ligne", readonly: "Lecture seule", error: "Non enregistré" };
+const SYNC_TEXT = {
+  loading: "Connexion à la sauvegarde en ligne.",
+  saving: "Enregistrement en cours.",
+  saved: "Tout est enregistré en ligne : vous retrouvez le tournoi sur vos autres appareils.",
+  local: "Sauvegarde dans ce navigateur uniquement.",
+  offline: "Pas de connexion. Les scores restent sur cet appareil et partent dès que le réseau revient.",
+  readonly: "Lecture seule : seul l’organisateur saisit les scores. La page se met à jour toute seule.",
+  error: "L’enregistrement en ligne a échoué. Les données restent sur cet appareil."
+};
+
+/* ---------- Petits outils ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pl = (n, one, many) => n + " " + (n > 1 ? many : one);
+const signed = n => (n > 0 ? "+" + n : n < 0 ? "−" + -n : "0");
+const ord = (n, sex) => (n === 1 ? (sex === "F" ? "1re" : "1er") : n + "e");
+const clone = o => JSON.parse(JSON.stringify(o));
+const playerById = id => state.players.find(p => p.id === id);
+const pname = id => { const p = playerById(id); return p ? p.name : "?"; };
+const team = ids => ids.map(pname).join(" & ");
+const lastRound = () => state.rounds[state.rounds.length - 1] || null;
+const fixed = () => state.settings.teamMode === "fixed";
+const started = () => state.rounds.length > 0 || !!state.finals;
+const teamById = id => state.teams.find(t => t.id === id) || null;
+const teamOfPlayer = pid => state.teams.find(t => t.p.includes(pid)) || null;
+const teamLabel = id => "Équipe " + teamNum(id);
+const teamNames = id => { const t = teamById(id); return t && t.p.length ? team(t.p) : "?"; };
+const freePlayers = () => state.players.filter(p => p.active && !teamOfPlayer(p.id)).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+function curTab() {
+  const t = ui.tab || (state.rounds.length ? "matchs" : "joueurs");
+  return t === "equipes" && !fixed() ? "joueurs" : t;
+}
+const hasContent = st => st.players.length > 0 || st.rounds.length > 0 || st.history.length > 0;
+function localISODate() {
+  const d = new Date(), p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+function fmtDate(iso) {
+  try { return new Date(iso + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }); }
+  catch (e) { return iso; }
+}
+function standings() {
+  if (!standingsCache || standingsCache.at !== state.updatedAt) standingsCache = { at: state.updatedAt };
+  if (!standingsCache.rows) standingsCache.rows = computeStandings(state);
+  return standingsCache.rows;
+}
+function teamStandings() {
+  if (!standingsCache || standingsCache.at !== state.updatedAt) standingsCache = { at: state.updatedAt };
+  if (!standingsCache.teams) standingsCache.teams = computeTeamStandings(state);
+  return standingsCache.teams;
+}
+/* missing : matchs sans score valide ; bad : parmi eux, ceux dont le score est saisi mais impossible */
+function roundStats(r) {
+  const S = state.settings;
+  let done = 0;
+  const missing = [], bad = [];
+  r.matches.forEach((m, i) => {
+    const s = scoreState(m, S);
+    if (s === "done") done++;
+    else { missing.push(i); if (s === "bad" || s === "tie") bad.push(i); }
+  });
+  return { done, total: r.matches.length, missing, bad, any: r.matches.some(m => m.sa != null || m.sb != null) };
+}
+const finalRules = () => ({ allowDraw: false, scoreFormat: state.settings.scoreFormat });
+/* Première manche qui a un score manquant ou faux (-1 si aucune) */
+function firstIncompleteRound() {
+  return state.rounds.findIndex(r => { const s = roundStats(r); return s.done < s.total; });
+}
+function problemText(m, rules) {
+  if (m.sa == null || m.sb == null) return "";
+  return scoreProblem(m.sa, m.sb, rules);
+}
+function formatHint(T) {
+  return T ? `Set de ${T} points, 2 points d’écart, ${SCORE_CAP[T]} au maximum. Un score impossible bloque la manche.` : "Tout score est accepté s’il y a un vainqueur, par exemple pour des matchs au temps.";
+}
+function currentRoundIndex() {
+  const n = state.rounds.length;
+  return ui.round == null || ui.round >= n || ui.round < 0 ? n - 1 : ui.round;
+}
+function matchByRef(ref) {
+  if (ref[0] === "f") return state.finals ? state.finals[ref.slice(1)] : null;
+  const mm = /^r(\d+)m(\d+)$/.exec(ref);
+  if (!mm) return null;
+  const r = state.rounds[+mm[1]];
+  return r ? r.matches[+mm[2]] : null;
+}
+function involvedIds() {
+  const s = new Set();
+  state.rounds.forEach(r => { r.rest.forEach(id => s.add(id)); r.matches.forEach(m => m.a.concat(m.b).forEach(id => s.add(id))); });
+  if (state.finals) FINAL_KEYS.forEach(k => { const f = state.finals[k]; if (f) f.a.concat(f.b).forEach(id => s.add(id)); });
+  return s;
+}
+function teamFormatSentence(T, courts) {
+  if (T < 2) return "Formez au moins 2 équipes complètes.";
+  const f = teamFormat(T, courts);
+  return pl(T, "équipe", "équipes") + " · " + pl(f.m, "match", "matchs") + (f.rest ? " · " + pl(f.rest, "équipe", "équipes") + " au repos, à tour de rôle" : " · toutes jouent");
+}
+function formatSentence(n, f) {
+  if (n < 2) return "Ajoutez au moins 2 joueurs présents.";
+  if (f.d + f.s === 0) return "Pas assez de joueurs pour un double. Autorisez les simples dans les réglages ou ajoutez des joueurs.";
+  const parts = [];
+  if (f.d) parts.push(pl(f.d, "double", "doubles"));
+  if (f.s) parts.push("1 simple");
+  return parts.join(" + ") + (f.rest ? " · " + f.rest + " au repos, à tour de rôle" : " · tout le monde joue");
+}
+
+/* ---------- Sauvegarde : appareil + en ligne ---------- */
+function readLocal() {
+  try { const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+function saveLocal() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ state, pending, ui: { tab: ui.tab, rank: ui.rank, sex: ui.sex } })); } catch (e) { /* stockage indisponible */ }
+}
+function touch(opts) {
+  state.updatedAt = Math.max(Date.now(), (state.updatedAt || 0) + 1);
+  pending = true;
+  standingsCache = null;
+  saveLocal();
+  if (mode === "db" && dbRef && !readOnly) {
+    setSync("saving");
+    scheduleWrite(opts && opts.now ? 60 : 700);
+  }
+}
+function scheduleWrite(delay) {
+  if (!dbRef || readOnly) return;
+  clearTimeout(writeTimer);
+  writeTimer = setTimeout(flushWrite, delay);
+}
+async function flushWrite() {
+  if (!dbRef || readOnly || !pending) return;
+  if (writing) { writeAgain = true; return; }
+  writing = true;
+  clearTimeout(retryTimer);
+  const body = clone(state);
+  try {
+    await dbRef.set(body);
+    if (state.updatedAt === body.updatedAt) { pending = false; saveLocal(); }
+    setSync(pending ? "saving" : "saved");
+  } catch (e) {
+    const code = e && e.code;
+    if (code === "invalid_argument" && canWrite !== true) {
+      readOnly = true; setSync("readonly"); render();
+    } else if (code === "not_granted" || code === "revoked" || code === "capability_disabled" || code === "capability_removed") {
+      mode = "local"; dbRef = null; setSync("local");
+    } else if (code === "quota_exceeded" || code === "invalid_argument") {
+      setSync("error");
+    } else {
+      setSync("offline");
+      retryTimer = setTimeout(flushWrite, (code === "resource_exhausted" ? 9000 : 4000) + Math.random() * 3000);
+    }
+  } finally {
+    writing = false;
+    if (writeAgain) { writeAgain = false; if (pending) scheduleWrite(250); }
+  }
+}
+function setSync(s) {
+  syncState = s;
+  syncBtn.dataset.s = s;
+  syncBtn.querySelector(".sync-label").textContent = SYNC_LABEL[s];
+  syncBtn.setAttribute("aria-label", "Sauvegarde : " + SYNC_LABEL[s]);
+}
+async function connect() {
+  const cl = window.claude;
+  let db = null, user = null;
+  try {
+    const res = await Promise.all([cl && cl.use ? cl.use("db") : null, cl && cl.use ? cl.use("user") : null]);
+    db = res[0]; user = res[1];
+  } catch (e) { db = null; }
+  if (!db) { mode = "local"; booted = true; setSync("local"); render(); return; }
+  mode = "db";
+  try { canWrite = user ? await user.can("data.write") : null; } catch (e) { canWrite = null; }
+  if (canWrite === false) readOnly = true;
+  try { dbRef = db.doc("tournoi/etat"); }
+  catch (e) { mode = "local"; booted = true; setSync("local"); render(); return; }
+  setSync("loading");
+  subscribe();
+}
+function subscribe() {
+  clearTimeout(loadTimer);
+  loadTimer = setTimeout(() => {
+    if (!remoteSeen) { setSync(readOnly ? "readonly" : "offline"); if (!booted) { booted = true; render(); } }
+  }, 10000);
+  try { unsub = dbRef.onSnapshot(onRemote, onRemoteError); }
+  catch (e) { onRemoteError({ code: "unavailable" }); }
+}
+function onRemote(snap) {
+  const confirmed = !snap.metadata.fromCache;
+  if (confirmed) { remoteSeen = true; clearTimeout(loadTimer); }
+  const first = !booted;
+  booted = true;
+  if (snap.metadata.hasPendingWrites) { if (first) render(); return; }
+  if (!snap.exists) {
+    if (!readOnly && hasContent(state)) { pending = true; scheduleWrite(60); }
+    else if (confirmed) setSync(readOnly ? "readonly" : "saved");
+    if (first) render();
+    return;
+  }
+  const remote = snap.data() || {};
+  const rAt = Number(remote.updatedAt) || 0;
+  if (pending && !readOnly && state.updatedAt > rAt) { scheduleWrite(60); if (first) render(); return; }
+  if (rAt !== state.updatedAt) {
+    state = normalizeState(clone(remote));
+    pending = false;
+    standingsCache = null;
+    saveLocal();
+    render({ remote: true });
+  } else if (first) {
+    render();
+  }
+  if (confirmed && !pending) setSync(readOnly ? "readonly" : "saved");
+}
+function onRemoteError(e) {
+  clearTimeout(loadTimer);
+  const code = e && e.code;
+  if (code === "unavailable") {
+    setSync("offline");
+    setTimeout(subscribe, 5000 + Math.random() * 5000);
+  } else if (code === "revoked" || code === "not_granted" || code === "capability_disabled" || code === "capability_removed") {
+    mode = "local"; dbRef = null; setSync("local");
+  } else {
+    setSync("error");
+  }
+  if (!booted) { booted = true; render(); }
+}
+window.addEventListener("online", () => { if (pending && dbRef) scheduleWrite(200); });
+
+/* ---------- Rendu ---------- */
+function isTyping() {
+  const a = document.activeElement;
+  return !!(a && (main.contains(a) || sheetPanel.contains(a)) && a.matches("input, textarea") && a.type !== "checkbox");
+}
+function captureFocus() {
+  const a = document.activeElement;
+  if (!a || !a.id || !(main.contains(a) || sheetPanel.contains(a))) return null;
+  let s = null, e = null;
+  try { s = a.selectionStart; e = a.selectionEnd; } catch (x) { /* champ sans sélection */ }
+  return { id: a.id, s, e };
+}
+function restoreFocus(f) {
+  if (!f) return;
+  const el = document.getElementById(f.id);
+  if (!el) return;
+  try {
+    el.focus({ preventScroll: true });
+    if (f.s != null && el.setSelectionRange) el.setSelectionRange(f.s, f.e);
+  } catch (x) { /* rien */ }
+}
+function render(opts) {
+  if (opts && opts.remote && isTyping()) { deferredRender = true; renderChrome(); return; }
+  deferredRender = false;
+  const f = captureFocus();
+  const tab = curTab();
+  renderChrome();
+  main.innerHTML = VIEWS[tab]();
+  if (ui.sheet === "settings") renderSettings();
+  restoreFocus(f);
+}
+function renderChrome() {
+  const tab = curTab();
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab ? "page" : "false"));
+  $("#tab-equipes").hidden = !fixed();
+  $(".tabs").classList.toggle("five", fixed());
+  let miss = 0;
+  if (!state.finals) state.rounds.forEach(r => { const s = roundStats(r); miss += s.total - s.done; });
+  const badge = $("#badge-matchs");
+  badge.hidden = !miss;
+  badge.textContent = miss ? String(miss) : "";
+  badge.setAttribute("aria-label", miss ? pl(miss, "score à saisir", "scores à saisir") : "");
+  let h = "";
+  if (state.exemple) {
+    h = `<div class="banner"><p><strong>Tournoi d’exemple.</strong> Parcourez les onglets pour voir comment ça marche, puis effacez-le pour lancer le vôtre.</p>${readOnly ? "" : '<button type="button" class="btn btn-court btn-small" data-act="example-reset">Commencer mon tournoi</button>'}</div>`;
+  } else if (readOnly) {
+    h = '<div class="banner banner-quiet"><p>Lecture seule : les scores sont saisis par l’organisateur. La page se met à jour toute seule.</p></div>';
+  }
+  bannerEl.innerHTML = h;
+  bannerEl.hidden = !h;
+}
+function viewLoading() {
+  return `<div class="loading"><div class="court">${COURT_SVG}<div class="side"></div><div class="side"></div></div><p class="lead">Chargement du tournoi…</p></div>`;
+}
+
+/* ----- Joueurs ----- */
+function viewPlayers() {
+  if (!booted) return viewLoading();
+  const S = state.settings, P = state.players;
+  const act = P.filter(p => p.active);
+  const nH = act.filter(p => p.sex === "H").length, nF = act.length - nH;
+  const fmt = planFormat(act.length, S.courts, S.fillSingles);
+  const played = new Map();
+  state.rounds.forEach(r => r.matches.forEach(m => m.a.concat(m.b).forEach(id => played.set(id, (played.get(id) || 0) + 1))));
+  const involved = involvedIds();
+  const dis = readOnly ? " disabled" : "";
+  const fx = fixed();
+  const row = p => {
+    const n = played.get(p.id) || 0;
+    const canDel = !involved.has(p.id) && !readOnly;
+    const t = fx ? teamOfPlayer(p.id) : null;
+    const meta = p.active ? [fx ? (t ? "Éq. " + teamNum(t.id) : "sans équipe") : "", n ? pl(n, "match", "matchs") : ""].filter(Boolean).join(" · ") : "absent";
+    return `<li class="prow${p.active ? "" : " absent"}">
+      <button type="button" class="sex sex-${p.sex}" data-act="sex" data-id="${p.id}" aria-label="${esc(p.name)} : ${p.sex === "H" ? "homme" : "femme"}. Changer"${dis}>${p.sex}</button>
+      <input class="pname-input" id="pn-${p.id}" data-id="${p.id}" value="${esc(p.name)}" maxlength="30" autocomplete="off" spellcheck="false" aria-label="Prénom"${readOnly ? " readonly" : ""}>
+      <span class="pmeta">${meta}</span>
+      <label class="switch" title="Présent"><input type="checkbox" id="pa-${p.id}" data-act="active" data-id="${p.id}"${p.active ? " checked" : ""}${dis}><span class="track" aria-hidden="true"></span><span class="sr">${esc(p.name)} présent</span></label>
+      ${canDel ? `<button type="button" class="icon-btn del" data-act="del" data-id="${p.id}" aria-label="Supprimer ${esc(p.name)}">${ICON.close}</button>` : '<span class="del-spacer" aria-hidden="true"></span>'}
+    </li>`;
+  };
+  const group = sex => {
+    const list = P.filter(p => p.sex === sex).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+    if (!list.length) return "";
+    const n = list.filter(p => p.active).length;
+    return `<section class="panel pgroup"><header class="pgroup-head"><h2 class="h-section sexcolor-${sex}">${sex === "H" ? "Hommes" : "Femmes"}</h2><span class="pmeta">${n} présent${n > 1 ? "s" : ""} sur ${list.length}</span></header><ul class="plist">${list.map(row).join("")}</ul></section>`;
+  };
+  let h = `<section class="view-head"><div><h1 class="h-display">Joueurs</h1><p class="lead">${P.length ? `${pl(act.length, "présent", "présents")} sur ${P.length} · ${nH} H · ${nF} F` : "Personne pour l’instant."}</p></div></section>`;
+  if (!readOnly) {
+    h += `<form class="addbar" id="addForm" autocomplete="off">
+      <label class="sr" for="addName">Prénom du joueur</label>
+      <input id="addName" class="field" placeholder="Prénom" maxlength="30" enterkeyhint="done" spellcheck="false">
+      <div class="seg" role="radiogroup" aria-label="Sexe">
+        <button type="button" role="radio" data-act="addsex" data-sex="H" aria-checked="${ui.sex === "H"}">H</button>
+        <button type="button" role="radio" data-act="addsex" data-sex="F" aria-checked="${ui.sex === "F"}">F</button>
+      </div>
+      <button class="btn btn-court" type="submit">Ajouter</button>
+    </form>
+    <p class="form-msg" id="addMsg" hidden></p>
+    <details class="paste" id="pasteBox"${ui.pasteOpen ? " open" : ""}>
+      <summary>Coller une liste de prénoms</summary>
+      <div class="paste-body">
+        <label class="sr" for="pasteArea">Liste de prénoms</label>
+        <textarea id="pasteArea" class="field" rows="5" placeholder="Paul H&#10;Léa F&#10;Hugo, Inès F, Tom"></textarea>
+        <p class="hint">Un prénom par ligne, ou séparés par des virgules. Ajoutez H ou F après le prénom, sinon le sexe choisi ci-dessus s’applique. Les colonnes Prénom, Sexe et Actif copiées depuis l’ancien fichier Excel marchent aussi.</p>
+        <button class="btn" type="button" data-act="paste">Ajouter la liste</button>
+      </div>
+    </details>`;
+  }
+  h += modePanel();
+  if (P.length) {
+    const sc = S.courts ? " · " + pl(S.courts, "terrain", "terrains") : "";
+    if (fx) {
+      const nT = activeTeams(state).length;
+      const sentence = state.teams.length ? teamFormatSentence(nT, S.courts)
+        : act.length < 4 ? "Ajoutez au moins 4 joueurs présents pour former 2 équipes."
+        : pl(Math.floor(act.length / 2), "équipe", "équipes") + " de 2 à former" + (act.length % 2 ? " · 1 joueur sans équipe" : "");
+      h += `<div class="formatbox"><span class="label">Équipes fixes · chaque manche${sc}</span><strong>${esc(sentence)}</strong></div>`;
+      if (!started() && !readOnly && act.length >= 4) h += `<button class="btn btn-primary btn-block btn-lg" type="button" data-act="go-teams">${state.teams.length ? "Voir les équipes" : "Former les équipes"}</button>`;
+      else if (started() && !readOnly) h += '<p class="hint">Un joueur ajouté arrive sans équipe : associez-le dans l’onglet Équipes, à un autre joueur ou comme remplaçant.</p>';
+    } else {
+      h += `<div class="formatbox"><span class="label">Chaque manche${sc}</span><strong>${esc(formatSentence(act.length, fmt))}</strong></div>`;
+      if (!state.rounds.length && !readOnly && fmt.d + fmt.s > 0) h += '<button class="btn btn-primary btn-block btn-lg" type="button" data-act="launch">Lancer le tournoi</button>';
+      else if (state.rounds.length && !readOnly) h += '<p class="hint">Un joueur ajouté ou de retour entre dans le tirage de la manche suivante, en priorité pour jouer.</p>';
+    }
+    h += group("H") + group("F");
+  } else {
+    h += `<div class="empty"><div class="court court-empty">${COURT_SVG}<div class="side side-a"><div class="names"><span class="pn">Équipe A</span></div></div><div class="side side-b"><div class="names"><span class="pn">Équipe B</span></div></div></div>
+      <h2 class="h-section">Qui joue ce soir ?</h2>
+      <p class="lead">${fx ? "Ajoutez les présents, un par un ou en collant une liste. Les paires sont ensuite tirées au sort ou composées à la main, et restent les mêmes toute la soirée." : "Ajoutez les présents, un par un ou en collant une liste. Chaque manche forme ensuite de nouvelles équipes : on change de partenaire et d’adversaires à chaque fois."}</p></div>`;
+  }
+  return h;
+}
+function modePanel() {
+  if (readOnly || started()) return "";
+  const m = state.settings.teamMode;
+  return `<section class="panel pad mode-panel"><div class="mode-head"><h2 class="label" id="mode-label">Formule</h2>
+      <div class="seg seg-wide" role="radiogroup" aria-labelledby="mode-label">
+        <button type="button" role="radio" data-act="mode" data-mode="melee" aria-checked="${m === "melee"}">Mêlée</button>
+        <button type="button" role="radio" data-act="mode" data-mode="fixed" aria-checked="${m === "fixed"}">Équipes fixes</button>
+      </div></div>
+    <p class="hint">${m === "fixed" ? "Les paires restent les mêmes toute la soirée. À chaque manche, chaque équipe affronte une équipe qu’elle n’a pas encore rencontrée." : "Nouvelles équipes tirées au sort à chaque manche : on change de partenaire et d’adversaires."}</p></section>`;
+}
+
+/* ----- Équipes (formule à équipes fixes) ----- */
+function viewTeams() {
+  if (!booted) return viewLoading();
+  const S = state.settings, isStarted = started(), ro = readOnly;
+  const T = state.teams, free = freePlayers(), nComplete = activeTeams(state).length;
+  const rowOf = new Map((state.rounds.length ? teamStandings() : []).map(x => [x.id, x]));
+  const dis = ro ? " disabled" : "";
+  const chip = id => {
+    const p = playerById(id);
+    if (!p) return "";
+    return `<button type="button" class="chip${p.active ? "" : " off"}" id="ch-${p.id}" data-act="pick" data-id="${p.id}" aria-pressed="${ui.pick === p.id}"${dis}><span class="sexdot sexdot-${p.sex}" aria-hidden="true"></span>${esc(p.name)}${p.active ? "" : '<span class="chip-note">absent</span>'}</button>`;
+  };
+  let h = `<section class="view-head"><div><h1 class="h-display">Équipes</h1><p class="lead">${T.length ? pl(T.length, "équipe", "équipes") + (free.length ? " · " + pl(free.length, "joueur sans équipe", "joueurs sans équipe") : "") : "Les paires restent les mêmes toute la soirée."}</p></div></section>`;
+  if (!state.players.length) {
+    return h + (ro ? "" : '<button class="btn btn-block" type="button" data-act="tab" data-tab="joueurs">Ajouter des joueurs</button>');
+  }
+  if (!ro && !isStarted) {
+    h += `<section class="panel pad team-tools">
+      <div class="set-row"><label for="st-mixedTeams">Paires mixtes<span class="hint">Un homme et une femme quand c’est possible.</span></label><span class="switch"><input type="checkbox" id="st-mixedTeams" data-set="mixedTeams"${S.mixedTeams ? " checked" : ""}><span class="track" aria-hidden="true"></span></span></div>
+      <div class="actions"><button type="button" class="btn btn-court" data-act="team-draw">${T.length ? "Refaire le tirage" : "Tirer les équipes au sort"}</button>${T.length ? '<button type="button" class="btn" data-act="team-clear">Composer à la main</button>' : ""}</div>
+    </section>`;
+  }
+  if (!ro && (T.length || free.length >= 2)) {
+    h += `<p class="hint">${isStarted
+      ? "Un joueur doit partir ? Touchez-le, puis un joueur sans équipe : il le remplace et l’équipe garde ses points. Deux joueurs sans équipe touchés l’un après l’autre forment une nouvelle équipe, qui joue dès la manche suivante."
+      : "Touchez deux joueurs pour les échanger. Deux joueurs sans équipe touchés l’un après l’autre forment une équipe."}</p>`;
+  }
+  if (T.length) {
+    h += `<ol class="teams">${T.map(t => {
+      const x = rowOf.get(t.id);
+      const ok = t.p.length === 2 && t.p.every(id => { const p = playerById(id); return p && p.active; });
+      const note = t.p.length < 2 ? "à compléter" : !ok ? "ne joue pas" : x && x.J ? `${ord(x.rank, "F")} · ${pl(x.Pts, "pt", "pts")} · GA ${signed(x.diff)}` : "";
+      const slot = t.p.length < 2 && !ro ? `<button type="button" class="chip chip-empty" data-act="slot" data-team="${t.id}">+ Joueur</button>` : "";
+      return `<li class="tcard${ok ? "" : " tcard-off"}"><span class="tno"><span class="sr">Équipe </span>${teamNum(t.id)}</span><div class="tplayers">${t.p.map(chip).join("")}${slot}</div>${note ? `<span class="tstat">${esc(note)}</span>` : ""}</li>`;
+    }).join("")}</ol>`;
+  }
+  if (free.length) {
+    h += `<section class="panel pad free-box"><h2 class="label">Sans équipe</h2><div class="chips">${free.map(p => chip(p.id)).join("")}</div>
+      ${!ro && free.length >= 2 && (isStarted || T.length) ? `<button type="button" class="btn btn-small" data-act="team-pair-free">${free.length >= 4 ? "Former des équipes avec eux" : "Les mettre ensemble"}</button>` : ""}</section>`;
+  }
+  if (!isStarted && !ro) {
+    h += `<div class="formatbox"><span class="label">Chaque manche${S.courts ? " · " + pl(S.courts, "terrain", "terrains") : ""}</span><strong>${esc(teamFormatSentence(nComplete, S.courts))}</strong></div>`;
+    if (nComplete >= 2) h += '<button class="btn btn-primary btn-block btn-lg" type="button" data-act="launch">Lancer le tournoi</button>';
+  }
+  return h;
+}
+
+/* ----- Matchs ----- */
+function courtCard(ref, m, o) {
+  const rules = o.final ? finalRules() : state.settings;
+  const s = scoreState(m, rules), prob = problemText(m, rules);
+  const lockedInput = readOnly || o.locked;
+  const single = m.a.length === 1;
+  const win = s === "done" && m.sa !== m.sb ? (m.sa > m.sb ? "a" : "b") : null;
+  /* Chaque joueur dans son carré de service ; l'étiquette (équipe, tête de série) sur la ligne médiane */
+  const side = k => {
+    const ids = m[k];
+    const cls = win ? (win === k ? " win" : " lose") : "";
+    const tag = o.tags ? o.tags[k] : o.seeds ? o.seeds[k].map(n => ord(n, o.sex)).join(" + ") : "";
+    return `<div class="side side-${k}${cls}">
+      <span class="wintag${win === k ? " on" : ""}" aria-hidden="${win === k ? "false" : "true"}">Victoire</span>
+      ${ids.map((id, i) => `<span class="pn pn-${i + 1}">${esc(pname(id))}</span>`).join("")}${tag ? `<span class="seedtag">${esc(tag)}</span>` : ""}
+    </div>`;
+  };
+  /* Les deux scores au filet, comme un tableau d'affichage */
+  const input = k => {
+    const val = k === "a" ? m.sa : m.sb;
+    return `<input class="score${win === k ? " is-win" : ""}" type="text" id="sc-${ref}-${k}" data-ref="${ref}" data-side="${k}" value="${val == null ? "" : val}" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" enterkeyhint="${k === "a" ? "next" : "done"}" placeholder="–" aria-label="Score de ${esc(m[k].map(pname).join(" et "))}"${lockedInput ? " readonly" : ""}>`;
+  };
+  return `<article class="match" id="card-${ref}" data-s="${s}">
+    <header class="match-head"><span class="court-no">${esc(o.title)}</span><span class="fmt">${single ? "Simple" : "Double"}</span><span class="status" data-s="${s}">${STATUS[s]}</span></header>
+    <div class="court${single ? " is-single" : ""}${o.locked ? " is-locked" : ""}">${COURT_SVG}${side("a")}${side("b")}<div class="scoreboard">${input("a")}<span class="sep" aria-hidden="true">–</span>${input("b")}</div></div>
+    <p class="match-msg"${prob ? "" : " hidden"}>${esc(prob)}</p>
+  </article>`;
+}
+function patchCard(ref) {
+  const card = document.getElementById("card-" + ref), m = matchByRef(ref);
+  if (!card || !m) return;
+  const rules = ref[0] === "f" ? finalRules() : state.settings;
+  const s = scoreState(m, rules), prob = problemText(m, rules);
+  const win = s === "done" && m.sa !== m.sb ? (m.sa > m.sb ? "a" : "b") : null;
+  card.dataset.s = s;
+  const st = card.querySelector(".status");
+  st.dataset.s = s;
+  st.textContent = STATUS[s];
+  ["a", "b"].forEach(k => {
+    const sd = card.querySelector(".side-" + k);
+    sd.classList.toggle("win", win === k);
+    sd.classList.toggle("lose", !!win && win !== k);
+    const tag = sd.querySelector(".wintag");
+    tag.classList.toggle("on", win === k);
+    tag.setAttribute("aria-hidden", win === k ? "false" : "true");
+    const sc = document.getElementById("sc-" + ref + "-" + k);
+    if (sc) sc.classList.toggle("is-win", win === k);
+  });
+  const msg = card.querySelector(".match-msg");
+  msg.textContent = prob;
+  msg.hidden = !prob;
+  if (s === "done") card.classList.remove("flag");
+}
+function meterText(st) {
+  if (st.done === st.total) return "Tous les scores sont saisis";
+  return `${st.done} ${st.done > 1 ? "scores" : "score"} sur ${st.total}` + (st.bad.length ? " · " + pl(st.bad.length, "score à vérifier", "scores à vérifier") : "");
+}
+function footerHint(st) {
+  return st.done === st.total ? "Lancez une nouvelle manche ou passez aux finales." : st.bad.length ? "Corrigez les scores signalés pour continuer." : "Saisissez tous les scores pour continuer.";
+}
+/* Lignes de scores d'une manche (feuille de scores, récapitulatif avant validation) */
+function scoreLines(r, rules) {
+  return `<ol class="slines">${r.matches.map(m => {
+    const s = scoreState(m, rules), w = s === "done" && m.sa !== m.sb ? (m.sa > m.sb ? "a" : "b") : null;
+    const who = k => `<span class="sl-${k}${w === k ? " sl-win" : ""}">${esc(team(m[k]))}${m.ta ? `<span class="sl-tag">${esc(teamLabel(k === "a" ? m.ta : m.tb))}</span>` : ""}</span>`;
+    const sc = s === "empty" ? "à jouer" : (m.sa == null ? "–" : m.sa) + "–" + (m.sb == null ? "–" : m.sb);
+    const warn = s !== "done" && s !== "empty";
+    const cl = typeof m.court === "number" ? "T" + m.court : m.court;
+    return `<li class="sline"><span class="sl-court"${typeof m.court === "number" ? ` title="Terrain ${m.court}"` : ""}>${esc(cl)}</span>${who("a")}<span class="sl-score${warn ? " warn" : ""}${s === "empty" ? " todo" : ""}">${sc}${warn ? '<span class="sl-note">à vérifier</span>' : ""}</span>${who("b")}</li>`;
+  }).join("")}</ol>`;
+}
+function viewAllScores() {
+  const rules = state.settings;
+  let h = `<section class="round-head"><div><p class="label">Feuille de scores</p><h1 class="h-display">Tous les scores</h1><p class="lead">${pl(state.rounds.length, "manche", "manches")} · touchez « Voir » pour ouvrir une manche et corriger un score.</p></div>
+    <button type="button" class="btn btn-small" data-act="copy-all">${ICON.copy}<span>Copier</span></button></section>`;
+  const F = state.finals;
+  if (F) {
+    const keys = FINAL_KEYS.filter(k => F[k]);
+    const fr = { matches: keys.map(k => Object.assign({}, F[k], { court: k === "H" || k === "F" ? k : k === "X" ? "Mx" : "" })) };
+    h += `<section class="panel sheet-round"><div class="sr-head"><h2 class="h-section">${keys.length > 1 ? "Finales" : esc(FINAL_TITLE[keys[0]] || "Finale")}</h2><button type="button" class="btn-link" data-act="tab" data-tab="finales">Voir</button></div>${scoreLines(fr, finalRules())}</section>`;
+  }
+  for (let i = state.rounds.length - 1; i >= 0; i--) {
+    const r = state.rounds[i], st = roundStats(r);
+    const status = st.done === st.total ? `<span class="status" data-s="done">Terminée</span>` : st.bad.length ? `<span class="status" data-s="bad">${pl(st.bad.length, "score à vérifier", "scores à vérifier")}</span>` : `<span class="status" data-s="partial">${st.done} sur ${st.total}</span>`;
+    const rest = (r.rt && r.rt.length) ? r.rt.map(t => teamLabel(t)).join(", ") : r.rest.map(pname).join(", ");
+    h += `<section class="panel sheet-round"><div class="sr-head"><h2 class="h-section">Manche ${r.n}</h2>${status}<button type="button" class="btn-link" data-act="round" data-i="${i}">Voir</button></div>${scoreLines(r, rules)}${rest ? `<p class="hint">Repos : ${esc(rest)}</p>` : ""}</section>`;
+  }
+  return h;
+}
+function viewMatches() {
+  if (!booted) return viewLoading();
+  if (!state.rounds.length && fixed()) {
+    const S = state.settings, n = activeTeams(state).length;
+    return `<section class="view-head"><div><h1 class="h-display">Matchs</h1><p class="lead">Équipes fixes : à chaque manche, chaque équipe affronte une équipe qu’elle n’a pas encore rencontrée.</p></div></section>
+      <div class="court court-empty">${COURT_SVG}<div class="side side-a"><div class="names"><span class="pn">Équipe 1</span></div></div><div class="side side-b"><div class="names"><span class="pn">Équipe 2</span></div></div></div>
+      <div class="formatbox"><span class="label">Avec ${pl(n, "équipe complète", "équipes complètes")}</span><strong>${esc(teamFormatSentence(n, S.courts))}</strong></div>
+      ${readOnly ? "" : n >= 2 ? '<button class="btn btn-primary btn-block btn-lg" type="button" data-act="launch">Lancer la manche 1</button>' : '<button class="btn btn-block" type="button" data-act="go-teams">Former les équipes</button>'}`;
+  }
+  if (!state.rounds.length) {
+    const S = state.settings, act = state.players.filter(p => p.active).length;
+    const fmt = planFormat(act, S.courts, S.fillSingles), can = fmt.d + fmt.s > 0;
+    return `<section class="view-head"><div><h1 class="h-display">Matchs</h1><p class="lead">Les équipes changent à chaque manche : nouveaux partenaires, nouveaux adversaires.</p></div></section>
+      <div class="court court-empty">${COURT_SVG}<div class="side side-a"><div class="names"><span class="pn">Équipe A</span></div></div><div class="side side-b"><div class="names"><span class="pn">Équipe B</span></div></div></div>
+      <div class="formatbox"><span class="label">Avec ${pl(act, "joueur présent", "joueurs présents")}</span><strong>${esc(formatSentence(act, fmt))}</strong></div>
+      ${readOnly ? "" : can ? '<button class="btn btn-primary btn-block btn-lg" type="button" data-act="launch">Lancer la manche 1</button>' : '<button class="btn btn-block" type="button" data-act="tab" data-tab="joueurs">Ajouter des joueurs</button>'}`;
+  }
+  const ri = currentRoundIndex(), r = state.rounds[ri], isLast = ri === state.rounds.length - 1;
+  const st = roundStats(r);
+  let label = "Manche jouée";
+  if (isLast && !state.finals) label = st.done === st.total ? "Manche terminée" : "Manche en cours";
+  let h = `<nav class="round-nav" aria-label="Manches"><button type="button" class="rchip rchip-all" data-act="round-all" aria-current="${!!ui.all}" aria-label="Tous les scores">Tout</button>${state.rounds.map((x, i) => {
+    const s = roundStats(x), done = s.done === s.total, warn = !done && (i < state.rounds.length - 1 || s.bad.length > 0);
+    return `<button type="button" class="rchip${done ? " done" : warn ? " warn" : ""}" data-act="round" data-i="${i}" aria-current="${!ui.all && i === ri}" aria-label="Manche ${x.n}${done ? ", terminée" : warn ? ", score à vérifier" : ""}">${x.n}</button>`;
+  }).join("")}</nav>`;
+  if (ui.all) return h + viewAllScores();
+  /* Manches terminées verrouillées : on les rouvre exprès pour corriger un score */
+  const locked = (!isLast || !!state.finals) && ui.unlock !== ri;
+  const rt = r.rt || [];
+  const restNote = rt.length ? " · " + pl(rt.length, "équipe au repos", "équipes au repos") : r.rest.length ? " · " + r.rest.length + " au repos" : "";
+  const fmtNote = state.settings.scoreFormat ? ` · en ${state.settings.scoreFormat} points` : " · score libre";
+  h += `<section class="round-head"><div><p class="label">${label}</p><h1 class="h-display">Manche ${r.n}</h1><p class="lead">${pl(r.matches.length, "match", "matchs")}${restNote}${fmtNote}</p></div>
+    <button type="button" class="btn btn-small" data-act="copy-round" data-i="${ri}">${ICON.copy}<span>Copier</span></button></section>`;
+  if (!readOnly && (!isLast || state.finals)) {
+    h += ui.unlock === ri
+      ? `<div class="lockbar is-open"><p class="hint">Correction de la manche ${r.n} : le classement se recalcule à chaque chiffre.</p><button type="button" class="btn btn-small btn-court" data-act="relock">Terminer la correction</button></div>`
+      : `<div class="lockbar"><p class="hint">Manche terminée : les scores sont verrouillés pour éviter une fausse manipulation.</p><button type="button" class="btn btn-small" data-act="unlock" data-i="${ri}">Corriger un score</button></div>`;
+  }
+  h += `<div class="matches">${r.matches.map((m, mi) => courtCard("r" + ri + "m" + mi, m, { title: "Terrain " + m.court, locked, tags: m.ta ? { a: teamLabel(m.ta), b: teamLabel(m.tb) } : null })).join("")}</div>`;
+  if (rt.length) h += `<div class="rest"><span class="label">Au repos</span><div class="pills">${rt.map(t => `<span class="pill">${esc(teamLabel(t))} · ${esc(teamNames(t))}</span>`).join("")}</div></div>`;
+  else if (r.rest.length) h += `<div class="rest"><span class="label">Au repos</span><div class="pills">${r.rest.map(id => `<span class="pill">${esc(pname(id))}</span>`).join("")}</div></div>`;
+  if (isLast && fixed() && !state.finals) {
+    const free = freePlayers();
+    if (free.length) h += `<div class="rest"><span class="label">Sans équipe</span><div class="pills">${free.map(p => `<span class="pill">${esc(p.name)}</span>`).join("")}</div>${readOnly ? "" : '<button type="button" class="btn-link" data-act="tab" data-tab="equipes">Les placer</button>'}</div>`;
+  }
+  if (!isLast) {
+    /* rien de plus : la barre de verrouillage est au-dessus des terrains */
+  } else if (state.finals) {
+    const one = finalsFormat() !== "sexes";
+    h += `<div class="panel footer-box"><p>${one ? "La finale est créée." : "Les finales sont créées."}</p><button class="btn btn-block" type="button" data-act="tab" data-tab="finales">${one ? "Voir la finale" : "Voir les finales"}</button></div>`;
+  } else if (!readOnly) {
+    const complete = st.done === st.total;
+    h += `<section class="panel footer-box" id="round-footer">
+      <div class="meter-row"><span class="meter-text" id="meter-text">${meterText(st)}</span><div class="meter" id="meter" aria-hidden="true">${r.matches.map((m, i) => `<span${st.missing.includes(i) ? "" : ' class="on"'}></span>`).join("")}</div></div>
+      <button type="button" class="btn btn-primary btn-block btn-lg${complete ? "" : " is-waiting"}" id="btn-next" data-act="launch">Lancer la manche ${r.n + 1}</button>
+      <button type="button" class="btn btn-block" data-act="tab" data-tab="finales">${finalsFormat() === "sexes" ? "Passer aux finales" : "Passer à la finale"}</button>
+      <p class="hint" id="footer-hint">${footerHint(st)}</p>
+      <div class="footer-alt" id="footer-alt"${st.any ? " hidden" : ""}><button type="button" class="btn-link" data-act="redraw">Refaire le tirage</button><button type="button" class="btn-link danger" data-act="cancel-round">Annuler la manche ${r.n}</button></div>
+    </section>`;
+  }
+  return h;
+}
+function patchRoundFooter(ri) {
+  if (ri == null) ri = state.rounds.length - 1;
+  const r = state.rounds[ri];
+  if (!r) return;
+  const st = roundStats(r), complete = st.done === st.total;
+  const chip = document.querySelector('.rchip[data-i="' + ri + '"]');
+  if (chip) {
+    chip.classList.toggle("done", complete);
+    chip.classList.toggle("warn", !complete && (ri < state.rounds.length - 1 || st.bad.length > 0));
+  }
+  if (ri !== state.rounds.length - 1) return;
+  const mt = $("#meter-text");
+  if (!mt) return;
+  mt.textContent = meterText(st);
+  Array.from($("#meter").children).forEach((s, i) => s.classList.toggle("on", !st.missing.includes(i)));
+  $("#btn-next").classList.toggle("is-waiting", !complete);
+  $("#footer-hint").textContent = footerHint(st);
+  $("#footer-alt").hidden = st.any;
+}
+
+/* ----- Classement ----- */
+/* GA = goal-average : points marqués moins points encaissés (2e critère de départage) */
+function statCells(x) {
+  const ga = x.diff > 0 ? " ga-pos" : x.diff < 0 ? " ga-neg" : "";
+  return `<td class="num pts">${x.Pts}</td><td class="num">${x.J}</td><td class="num">${x.V}</td><td class="num hide-sm">${x.D}</td><td class="num ga${ga}">${signed(x.diff)}</td><td class="num hide-sm">${x.PM}</td><td class="num hide-sm">${x.PE}</td><td class="num hide-sm">${x.Rep}</td>`;
+}
+function rankHead(who) {
+  return `<thead><tr><th scope="col">#</th><th scope="col" class="mv" title="Places gagnées ou perdues depuis la manche précédente"><span aria-hidden="true">Évol.</span><span class="sr">Évolution</span></th><th scope="col">${who}</th><th scope="col" class="num">Pts</th><th scope="col" class="num" title="Matchs joués">J</th><th scope="col" class="num" title="Victoires">V</th><th scope="col" class="num hide-sm" title="Défaites">D</th><th scope="col" class="num" title="Goal-average : points marqués moins points encaissés">GA</th><th scope="col" class="num hide-sm" title="Points marqués">Marqués</th><th scope="col" class="num hide-sm" title="Points encaissés">Encaissés</th><th scope="col" class="num hide-sm">Repos</th></tr></thead>`;
+}
+const RANK_COLS = 11;
+function rankHint(extra) {
+  const S = state.settings;
+  return `<p class="hint">Victoire ${pl(S.winPts, "pt", "pts")}, défaite ${pl(S.lossPts, "pt", "pts")}${S.allowDraw ? ", nul " + pl(S.drawPts, "pt", "pts") : ""}. GA = goal-average : points marqués moins points encaissés. À égalité de points : goal-average, puis points marqués, puis ordre alphabétique. Touchez une ligne pour voir tous les matchs.${extra || ""}</p>`;
+}
+/* Détail d'une ligne du classement : bilan puis chaque manche avec son score */
+function histLine(n, m, k, partner, oppLabel) {
+  const o = k === "a" ? "b" : "a", s = scoreState(m, state.settings);
+  const mine = m["s" + k], theirs = m["s" + o];
+  const sc = s === "done" ? `${mine}–${theirs}` : s === "empty" ? "à jouer" : "score à vérifier";
+  const res = s === "done" ? (mine > theirs ? "V" : mine < theirs ? "D" : "N") : "";
+  return { n, text: `${partner && partner.length ? "avec " + team(partner) + ", " : ""}contre ${oppLabel || team(m[o])} · ${sc}`, res };
+}
+function playerMatchLines(pid) {
+  const out = [];
+  state.rounds.forEach(r => {
+    const m = r.matches.find(x => x.a.includes(pid) || x.b.includes(pid));
+    if (m) { const k = m.a.includes(pid) ? "a" : "b"; out.push(histLine(r.n, m, k, m[k].filter(x => x !== pid))); }
+    else if (r.rest.includes(pid)) out.push({ n: r.n, text: "repos", res: "" });
+  });
+  return out;
+}
+function teamMatchLines(tid) {
+  const out = [];
+  state.rounds.forEach(r => {
+    const m = r.matches.find(x => x.ta === tid || x.tb === tid);
+    if (m) { const k = m.ta === tid ? "a" : "b", o = k === "a" ? "b" : "a"; out.push(histLine(r.n, m, k, null, `${teamLabel(k === "a" ? m.tb : m.ta)} (${team(m[o])})`)); }
+    else if ((r.rt || []).includes(tid)) out.push({ n: r.n, text: "repos", res: "" });
+  });
+  return out;
+}
+function detailCell(x, lines) {
+  const sum = `${pl(x.V, "victoire", "victoires")} · ${pl(x.D, "défaite", "défaites")}${x.N ? " · " + pl(x.N, "nul", "nuls") : ""} · ${x.PM} points marqués, ${x.PE} encaissés · goal-average ${signed(x.diff)} · ${x.Rep} repos`;
+  const list = lines.length ? `<ol class="mh">${lines.map(l => `<li><span class="mh-r">M${l.n}</span>${esc(l.text)}${l.res ? `<span class="res res-${l.res}">${l.res}</span>` : ""}</li>`).join("")}</ol>` : "";
+  return `<td colspan="${RANK_COLS}"><p>${esc(sum)}</p>${list}</td>`;
+}
+/* Classement après la manche k (1 à n). Par défaut : la dernière manche qui a au moins un score */
+function rankRound() {
+  const n = state.rounds.length;
+  if (ui.rankK != null && ui.rankK >= 1 && ui.rankK <= n) return ui.rankK;
+  for (let i = n - 1; i >= 0; i--) if (roundStats(state.rounds[i]).any) return i + 1;
+  return n;
+}
+/* Classement calculé sur les k premières manches ; pour une manche passée, seuls ceux qui y étaient déjà */
+function standingsAfter(k, teams) {
+  if (!standingsCache || standingsCache.at !== state.updatedAt) standingsCache = { at: state.updatedAt };
+  const c = standingsCache.after || (standingsCache.after = {});
+  const key = (teams ? "T" : "P") + k;
+  if (!c[key]) {
+    if (k >= state.rounds.length) c[key] = teams ? teamStandings() : standings();
+    else {
+      const sub = Object.assign({}, state, { rounds: state.rounds.slice(0, k) });
+      const rows = (teams ? computeTeamStandings(sub) : computeStandings(sub)).filter(x => x.J > 0 || x.Rep > 0);
+      const cnt = { H: 0, F: 0 };
+      rows.forEach((x, i) => { x.rank = i + 1; if (!teams) x.srank = ++cnt[x.sex]; });
+      c[key] = rows;
+    }
+  }
+  return c[key];
+}
+/* La vue affichée : manche k, classement à cette manche, celui de la manche d'avant (pour les flèches) */
+function rankContext() {
+  const n = state.rounds.length, k = rankRound(), teams = fixed();
+  const rows = n ? standingsAfter(k, teams) : (teams ? teamStandings() : standings());
+  const prev = k >= 2 ? standingsAfter(k - 1, teams) : null;
+  const isCurrent = state.rounds.slice(k).every(r => !roundStats(r).any);
+  return { n, k, teams, rows, prev, isCurrent };
+}
+/* Places gagnées (+) ou perdues (−) depuis la manche d'avant ; null = n'était pas encore classé */
+function moveOf(ctx, x, sexView) {
+  if (!ctx.prev) return undefined;
+  const p = ctx.prev.find(y => y.id === x.id);
+  if (!p) return null;
+  return sexView ? p.srank - x.srank : p.rank - x.rank;
+}
+const MV_ICON = '<svg class="mv-i" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1.2L9.4 8.6H.6z"/></svg>';
+function moveCell(d) {
+  if (d === undefined) return '<td class="mv"></td>';
+  if (d === null) return '<td class="mv mv-new"><span title="Entre au classement">nouv.</span></td>';
+  if (!d) return '<td class="mv mv-eq"><span title="Même place qu’à la manche précédente">=</span><span class="sr">même place</span></td>';
+  const n = Math.abs(d), up = d > 0;
+  return `<td class="mv ${up ? "mv-up" : "mv-down"}"><span title="${pl(n, "place", "places")} ${up ? (n > 1 ? "gagnées" : "gagnée") : (n > 1 ? "perdues" : "perdue")}">${MV_ICON}${n}</span><span class="sr">${up ? "gagne" : "perd"} ${pl(n, "place", "places")}</span></td>`;
+}
+const moveText = d => (d === undefined ? "" : d === null ? " · nouveau" : d > 0 ? ` · ▲${d}` : d < 0 ? ` · ▼${-d}` : " · =");
+function rankRoundNav(ctx) {
+  if (ctx.n < 2) return "";
+  return `<nav class="round-nav rank-nav" aria-label="Classement après la manche"><span class="label">Après la manche</span>${state.rounds.map((r, i) => `<button type="button" class="rchip" data-act="rank-round" data-k="${i + 1}" aria-current="${i + 1 === ctx.k}">${r.n}</button>`).join("")}</nav>`;
+}
+function rankLead(ctx, who) {
+  if (!ctx.n) return `Le classement${who} s’affiche dès les premiers scores.`;
+  if (!ctx.isCurrent) return `Classement${who} tel qu’il était après la manche ${ctx.k}. Touchez ${ctx.n} pour revenir au classement actuel.`;
+  const lr = state.rounds[ctx.k - 1], inProgress = roundStats(lr).done < lr.matches.length;
+  return `${who ? "Équipes après" : "Après"} ${pl(ctx.k, "manche", "manches")}${inProgress ? " (manche " + ctx.k + " en cours)" : ""}.`;
+}
+function moveHint(ctx) {
+  return ctx.prev ? ` Flèches : places gagnées ou perdues depuis la manche ${ctx.k - 1}.` : "";
+}
+function viewTeamRanking() {
+  const ctx = rankContext(), rows = ctx.rows;
+  let h = `<section class="view-head"><div><h1 class="h-display">Classement</h1><p class="lead">${rankLead(ctx, " des équipes")}</p></div>${ctx.n && rows.length ? `<button type="button" class="btn btn-small" data-act="copy-rank">${ICON.copy}<span>Copier</span></button>` : ""}</section>`;
+  if (!ctx.n || !rows.length) return h;
+  h += rankRoundNav(ctx);
+  const quals = ctx.isCurrent ? teamFinalSeeds(rows) : [], qual = new Set(quals.map(x => x.id));
+  const cutAfter = quals.length === 2 ? rows.findIndex(x => x.id === quals[1].id) : -1;
+  const body = rows.map((x, i) => {
+    const open = ui.open === x.id;
+    let t = `<tr class="r-row${qual.has(x.id) ? " q" : ""}${x.active ? "" : " gone"}" data-act="rowtoggle" data-id="${x.id}" tabindex="0" aria-expanded="${open}">
+      <td class="rk"><span>${x.rank}</span></td>${moveCell(moveOf(ctx, x, false))}
+      <td class="who">${esc(x.name)}<span class="srank srank-T">Éq. ${teamNum(x.id)}</span>${x.active ? "" : '<span class="gone-tag">ne joue plus</span>'}</td>
+      ${statCells(x)}
+    </tr><tr class="r-detail"${open ? "" : " hidden"}>${open ? detailCell(x, teamMatchLines(x.id).filter(l => l.n <= ctx.k)) : `<td colspan="${RANK_COLS}"></td>`}</tr>`;
+    if (i === cutAfter) t += `<tr class="cut"><td colspan="${RANK_COLS}">Finale : 1re équipe contre 2e</td></tr>`;
+    return t;
+  }).join("");
+  h += `<div class="panel rank-panel"><div class="table-scroll"><table class="rank${ctx.prev ? "" : " no-mv"}">${rankHead("Équipe")}<tbody>${body}</tbody></table></div></div>`;
+  h += rankHint((qual.size ? " En jaune : les deux équipes qualifiées pour la finale." : "") + moveHint(ctx));
+  return h;
+}
+function viewRanking() {
+  if (!booted) return viewLoading();
+  if (fixed()) return viewTeamRanking();
+  const ctx = rankContext(), rows = ctx.rows;
+  let h = `<section class="view-head"><div><h1 class="h-display">Classement</h1><p class="lead">${rankLead(ctx, "")}</p></div>${ctx.n && rows.length ? `<button type="button" class="btn btn-small" data-act="copy-rank">${ICON.copy}<span>Copier</span></button>` : ""}</section>`;
+  if (!ctx.n || !rows.length) return h;
+  h += rankRoundNav(ctx);
+  const v = ui.rank;
+  const cH = rows.filter(x => x.sex === "H").length, cF = rows.length - cH;
+  h += `<div class="seg" role="group" aria-label="Classement à afficher">
+    <button type="button" data-act="rank" data-v="all" aria-pressed="${v === "all"}" title="Hommes et femmes classés ensemble">Mixte<span class="count">${rows.length}</span></button>
+    <button type="button" data-act="rank" data-v="H" aria-pressed="${v === "H"}">Hommes<span class="count">${cH}</span></button>
+    <button type="button" data-act="rank" data-v="F" aria-pressed="${v === "F"}">Femmes<span class="count">${cF}</span></button>
+  </div>`;
+  const list = v === "all" ? rows : rows.filter(x => x.sex === v);
+  /* Qualifiés selon le format de finale (ceux des finales créées, sinon ceux d'aujourd'hui) ; pas sur un classement passé */
+  const fmt = finalsFormat(), plan = state.finals || buildFinals(state);
+  const qual = new Set();
+  if (ctx.isCurrent) ["H", "F", "X", "G"].forEach(k => { const f = plan[k]; if (f) f.a.concat(f.b).forEach(id => qual.add(id)); });
+  let top = 0;
+  while (top < list.length && qual.has(list[top].id)) top++;
+  const sameView = fmt === "general" ? v === "all" : v !== "all";
+  const cutAfter = sameView && top >= 2 && top === list.filter(x => qual.has(x.id)).length ? top - 1 : -1;
+  const cutLabel = fmt === "mixte" ? "Double mixte : 1er H + 2e F contre 2e H + 1re F"
+    : fmt === "general" ? (top >= 4 ? "Finale : 1er + 4e contre 2e + 3e" : "Finale en simple : 1er contre 2e")
+    : top >= 4 ? `Finale : ${ord(1, v)} + 4e contre 2e + 3e` : `Finale en simple : ${ord(1, v)} contre 2e`;
+  const body = list.map((x, i) => {
+    const open = ui.open === x.id;
+    let t = `<tr class="r-row${qual.has(x.id) ? " q" : ""}${x.active ? "" : " gone"}" data-act="rowtoggle" data-id="${x.id}" tabindex="0" aria-expanded="${open}">
+      <td class="rk"><span>${v === "all" ? x.rank : x.srank}</span></td>${moveCell(moveOf(ctx, x, v !== "all"))}
+      <td class="who"><span class="sexdot sexdot-${x.sex}" aria-hidden="true"></span>${esc(x.name)}${v === "all" ? `<span class="srank srank-${x.sex}">${x.sex}${x.srank}</span>` : ""}${x.active ? "" : '<span class="gone-tag">parti</span>'}</td>
+      ${statCells(x)}
+    </tr><tr class="r-detail"${open ? "" : " hidden"}>${open ? detailCell(x, playerMatchLines(x.id).filter(l => l.n <= ctx.k)) : `<td colspan="${RANK_COLS}"></td>`}</tr>`;
+    if (i === cutAfter) t += `<tr class="cut"><td colspan="${RANK_COLS}">${cutLabel}</td></tr>`;
+    return t;
+  }).join("");
+  h += `<div class="panel rank-panel"><div class="table-scroll"><table class="rank${ctx.prev ? "" : " no-mv"}">${rankHead("Joueur")}<tbody>${body}</tbody></table></div></div>`;
+  h += rankHint((qual.size ? ` En jaune : les qualifiés pour ${fmt === "sexes" ? "les finales" : "la finale"} (format « ${FF[fmt].title} », à changer dans l’onglet Finales).` : "") + moveHint(ctx));
+  return h;
+}
+
+/* ----- Finales ----- */
+function championInner(sx) {
+  const f = state.finals && state.finals[sx], w = finalWinner(f, finalRules());
+  if (!w) return "";
+  const winIds = f[w], loseIds = w === "a" ? f.b : f.a;
+  const two = winIds.length > 1;
+  const label = sx === "T" ? "Équipe gagnante · " + teamLabel(w === "a" ? f.ta : f.tb)
+    : sx === "X" ? "Vainqueurs du double mixte"
+    : sx === "G" ? (two ? "Vainqueurs de la finale" : "Vainqueur de la finale")
+    : sx === "H" ? (two ? "Vainqueurs de la finale hommes" : "Vainqueur de la finale hommes") : (two ? "Gagnantes de la finale femmes" : "Gagnante de la finale femmes");
+  const sw = w === "a" ? f.sa : f.sb, sl = w === "a" ? f.sb : f.sa;
+  return `<div class="champ">${ICON.trophy}<div><p class="label">${label}</p><p class="champ-names">${esc(team(winIds))}</p><p class="hint">Finale gagnée ${sw}–${sl} contre ${esc(team(loseIds))}</p></div></div>`;
+}
+/* Ce qui bloque la création des finales ("" si rien) */
+function finalsBlocked() {
+  const lr = lastRound();
+  if (!lr) return fixed() ? "Jouez au moins une manche avant la finale." : "Jouez au moins une manche avant les finales.";
+  const bi = firstIncompleteRound();
+  if (bi < 0) return "";
+  const r = state.rounds[bi], st = roundStats(r);
+  return `Terminez d’abord la manche ${r.n} : ${st.bad.length ? pl(st.bad.length, "score à vérifier", "scores à vérifier") : pl(st.total - st.done, "score manque", "scores manquent")}.`;
+}
+/* Une ligne d'aperçu « si les finales commençaient maintenant » */
+function previewLine(f, tagA, tagB, title, cls) {
+  return `<div class="prev">${title ? `<span class="h-section${cls ? " " + cls : ""}">${esc(title)}</span>` : ""}<p><strong>${esc(team(f.a))}</strong> <span class="vs">contre</span> <strong>${esc(team(f.b))}</strong></p><p class="hint">${esc(tagA)} contre ${esc(tagB)}</p></div>`;
+}
+function finalPreview(fmt) {
+  const rows = standings();
+  if (fmt === "mixte") {
+    const f = makeMixedFinal(finalSeeds(rows, "H"), finalSeeds(rows, "F"));
+    return f ? previewLine(f, "1er homme + 2e femme", "2e homme + 1re femme", "Double mixte") : '<div class="prev"><p class="hint">Double mixte impossible : il faut au moins 2 hommes et 2 femmes classés.</p></div>';
+  }
+  if (fmt === "general") {
+    const f = makeFinal(generalSeeds(rows));
+    if (!f) return '<div class="prev"><p class="hint">Pas de finale : il faut au moins 2 joueurs classés.</p></div>';
+    return f.a.length === 2 ? previewLine(f, "1er + 4e", "2e + 3e", "Classement mixte") : previewLine(f, "1er", "2e (en simple)", "Classement mixte");
+  }
+  return ["H", "F"].map(sx => {
+    const f = makeFinal(finalSeeds(rows, sx)), title = sx === "H" ? "Hommes" : "Femmes";
+    if (!f) return `<div class="prev"><span class="h-section sexcolor-${sx}">${title}</span><p class="hint">Pas de finale : il faut au moins 2 ${sx === "H" ? "joueurs classés" : "joueuses classées"}.</p></div>`;
+    return f.a.length === 2 ? previewLine(f, `${ord(1, sx)} + 4e`, "2e + 3e", title, "sexcolor-" + sx) : previewLine(f, ord(1, sx), "2e (en simple)", title, "sexcolor-" + sx);
+  }).join("");
+}
+function viewFinals() {
+  if (!booted) return viewLoading();
+  const F = state.finals, fmt = finalsFormat();
+  const teamMode = fmt === "team";
+  let h = `<section class="view-head"><div><h1 class="h-display">${fmt === "sexes" ? "Finales" : "Finale"}</h1><p class="lead">${FF[fmt].lead}</p></div></section>`;
+  if (!F && !teamMode) {
+    if (!readOnly) {
+      h += `<section class="panel pad final-choice"><h2 class="label" id="ff-label">Format de la finale</h2>
+        <div class="choices" role="radiogroup" aria-labelledby="ff-label">${FINAL_FORMATS.map(k => `<button type="button" role="radio" class="choice" data-act="final-fmt" data-v="${k}" aria-checked="${fmt === k}"><span class="choice-title">${FF[k].title}</span><span class="choice-desc">${FF[k].desc}</span></button>`).join("")}</div>
+        <p class="hint">Le format se choisit le jour même, jusqu’à la création ${fmt === "sexes" ? "des finales" : "de la finale"}.</p></section>`;
+    }
+    if (state.rounds.length) h += `<section class="panel pad"><p class="label">Si ${fmt === "sexes" ? "les finales commençaient" : "la finale commençait"} maintenant</p>${finalPreview(fmt)}</section>`;
+    if (!readOnly) {
+      const blocked = finalsBlocked();
+      h += `<button type="button" class="btn btn-primary btn-block btn-lg" data-act="finals-create"${blocked ? ' aria-disabled="true"' : ""}>${fmt === "sexes" ? "Créer les finales" : "Créer la finale"}</button>`;
+      h += `<p class="hint">${blocked || (fmt === "sexes" ? "Les finales figent le classement actuel. Vous pourrez les annuler pour rejouer une manche ou changer de format." : "La finale fige le classement actuel. Vous pourrez l’annuler pour rejouer une manche ou changer de format.")}</p>`;
+    }
+  } else if (!F && teamMode) {
+    const seeds = teamFinalSeeds(teamStandings());
+    if (state.rounds.length) {
+      h += `<section class="panel pad"><p class="label">Si la finale commençait maintenant</p>${seeds.length < 2
+        ? '<div class="prev"><p class="hint">Pas de finale : il faut au moins 2 équipes classées.</p></div>'
+        : `<div class="prev"><p><strong>${esc(seeds[0].name)}</strong> <span class="vs">contre</span> <strong>${esc(seeds[1].name)}</strong></p><p class="hint">${esc(teamLabel(seeds[0].id))} (1re) contre ${esc(teamLabel(seeds[1].id))} (2e)</p></div>`}</section>`;
+    }
+    if (!readOnly) {
+      const blocked = finalsBlocked();
+      h += `<button type="button" class="btn btn-primary btn-block btn-lg" data-act="finals-create"${blocked ? ' aria-disabled="true"' : ""}>Créer la finale</button>`;
+      h += `<p class="hint">${blocked || "La finale fige le classement actuel. Vous pourrez l’annuler pour rejouer une manche."}</p>`;
+    }
+  } else if (F && F.T) {
+    const f = F.T;
+    h += `<section class="final">${courtCard("fT", f, { title: "Finale", tags: { a: "1re · " + teamLabel(f.ta), b: "2e · " + teamLabel(f.tb) }, final: true })}<div id="champ-T">${championInner("T")}</div></section>`;
+    h += `<div class="actions">
+      <button type="button" class="btn" data-act="copy-results">${ICON.copy}<span>Copier le résultat</span></button>
+      ${readOnly ? "" : '<button type="button" class="btn" data-act="new-tournament">Nouveau tournoi</button><button type="button" class="btn btn-danger" data-act="finals-cancel">Annuler la finale</button>'}
+    </div>`;
+  } else {
+    if (fmt === "mixte") {
+      const f = F.X;
+      h += `<section class="final">${courtCard("fX", f, { title: FINAL_TITLE.X, tags: { a: "1er H + 2e F", b: "2e H + 1re F" }, final: true })}<div id="champ-X">${championInner("X")}</div></section>`;
+    } else if (fmt === "general") {
+      const f = F.G;
+      h += `<section class="final">${courtCard("fG", f, { title: FINAL_TITLE.G, seeds: { a: f.seedA, b: f.seedB }, final: true })}<div id="champ-G">${championInner("G")}</div></section>`;
+    } else {
+      ["H", "F"].forEach(sx => {
+        const f = F[sx];
+        if (!f) { h += `<p class="hint">${sx === "H" ? "Pas de finale hommes : il fallait au moins 2 joueurs classés." : "Pas de finale femmes : il fallait au moins 2 joueuses classées."}</p>`; return; }
+        h += `<section class="final">${courtCard("f" + sx, f, { title: FINAL_TITLE[sx], seeds: { a: f.seedA, b: f.seedB }, final: true, sex: sx })}<div id="champ-${sx}">${championInner(sx)}</div></section>`;
+      });
+    }
+    const many = fmt === "sexes";
+    h += `<div class="actions">
+      <button type="button" class="btn" data-act="copy-results">${ICON.copy}<span>${many ? "Copier les résultats" : "Copier le résultat"}</span></button>
+      ${readOnly ? "" : `<button type="button" class="btn" data-act="new-tournament">Nouveau tournoi</button><button type="button" class="btn btn-danger" data-act="finals-cancel">${many ? "Annuler les finales" : "Annuler la finale"}</button>`}
+    </div>`;
+  }
+  if (state.history.length) {
+    const won = x => [x.H.length ? "Hommes : <strong>" + esc(x.H.join(" & ")) + "</strong>" : "", x.F.length ? "Femmes : <strong>" + esc(x.F.join(" & ")) + "</strong>" : "",
+      x.X.length ? "Double mixte : <strong>" + esc(x.X.join(" & ")) + "</strong>" : "", x.G.length ? "Finale : <strong>" + esc(x.G.join(" & ")) + "</strong>" : "",
+      x.T.length ? "Équipe : <strong>" + esc(x.T.join(" & ")) + "</strong>" : ""].filter(Boolean).join(" · ");
+    h += `<section class="panel pad"><h2 class="h-section">Palmarès</h2><ol class="hist">${state.history.map(x => `<li><span class="hist-date">${esc(fmtDate(x.date))}</span><span>${won(x)}</span></li>`).join("")}</ol></section>`;
+  }
+  return h;
+}
+const VIEWS = { joueurs: viewPlayers, equipes: viewTeams, matchs: viewMatches, classement: viewRanking, finales: viewFinals };
+
+/* ----- Réglages et fenêtres ----- */
+function renderSettings() {
+  const S = state.settings, ro = readOnly ? " disabled" : "", fx = fixed();
+  const modeDis = readOnly || started() ? " disabled" : "";
+  const num = (k, v) => `<input class="field num-field" type="text" inputmode="numeric" id="st-${k}" data-set="${k}" value="${v}" autocomplete="off"${ro}>`;
+  const sw = (k, v) => `<span class="switch"><input type="checkbox" id="st-${k}" data-set="${k}"${v ? " checked" : ""}${ro}><span class="track" aria-hidden="true"></span></span>`;
+  sheetPanel.innerHTML = `
+    <header class="sheet-head"><h2 class="h-section" id="sheet-title">Réglages</h2><button type="button" class="icon-btn" data-act="close-sheet" aria-label="Fermer">${ICON.close}</button></header>
+    <section class="set-group"><h3 class="label">Scores</h3>
+      <div class="set-row set-row-wrap"><label id="st-fmt-label">Points pour gagner un match<span class="hint">${esc(formatHint(S.scoreFormat))}</span></label>
+        <div class="seg" role="radiogroup" aria-labelledby="st-fmt-label">${SCORE_FORMATS.map(v => `<button type="button" role="radio" data-act="fmt" data-v="${v}" aria-checked="${S.scoreFormat === v}"${ro}>${v || "Libre"}</button>`).join("")}</div></div>
+    </section>
+    <section class="set-group"><h3 class="label">Points au classement</h3>
+      <div class="set-row"><label for="st-winPts">Victoire</label>${num("winPts", S.winPts)}</div>
+      <div class="set-row"><label for="st-lossPts">Défaite</label>${num("lossPts", S.lossPts)}</div>
+      <div class="set-row"><label for="st-allowDraw">Autoriser l’égalité<span class="hint">Sinon un match à égalité bloque la manche.</span></label>${sw("allowDraw", S.allowDraw)}</div>
+      ${S.allowDraw ? `<div class="set-row"><label for="st-drawPts">Match nul</label>${num("drawPts", S.drawPts)}</div>` : ""}
+    </section>
+    <section class="set-group"><h3 class="label">Organisation</h3>
+      <div class="set-row"><label id="st-mode-label">Formule<span class="hint">${started() ? "Pour en changer, lancez un nouveau tournoi." : fx ? "Les paires restent les mêmes." : "Nouvelles équipes à chaque manche."}</span></label>
+        <div class="seg" role="radiogroup" aria-labelledby="st-mode-label"><button type="button" role="radio" data-act="mode" data-mode="melee" aria-checked="${!fx}"${modeDis}>Mêlée</button><button type="button" role="radio" data-act="mode" data-mode="fixed" aria-checked="${fx}"${modeDis}>Équipes fixes</button></div></div>
+      <div class="set-row"><label for="st-courts">Terrains disponibles<span class="hint">${fx ? "Au-delà, les équipes en trop se reposent à tour de rôle." : "Au-delà, les joueurs en trop se reposent à tour de rôle."}</span></label>
+        <div class="stepper"><button type="button" data-act="step" data-d="-1" aria-label="Un terrain de moins"${ro}>−</button><output id="st-courts" aria-live="polite">${S.courts ? pl(S.courts, "terrain", "terrains") : "Sans limite"}</output><button type="button" data-act="step" data-d="1" aria-label="Un terrain de plus"${ro}>+</button></div></div>
+      ${fx ? "" : `<div class="set-row"><label for="st-fillSingles">Compléter avec un simple<span class="hint">Quand il reste 2 ou 3 joueurs après les doubles.</span></label>${sw("fillSingles", S.fillSingles)}</div>`}
+    </section>
+    ${fx ? "" : `<details class="set-group" id="advBox"><summary class="label">Tirage avancé</summary>
+      <div class="set-row"><label for="st-partnerWeight">Éviter le même partenaire<span class="hint">Pénalité par répétition.</span></label>${num("partnerWeight", S.partnerWeight)}</div>
+      <div class="set-row"><label for="st-opponentWeight">Éviter les mêmes adversaires</label>${num("opponentWeight", S.opponentWeight)}</div>
+      <div class="set-row"><label for="st-tries">Essais par tirage</label>${num("tries", S.tries)}</div>
+    </details>`}
+    <section class="set-group"><h3 class="label">Sauvegarde</h3><p>${SYNC_TEXT[syncState]}</p></section>
+    ${readOnly ? "" : `<section class="danger-zone"><h3 class="label">Tournoi</h3>
+      <button type="button" class="btn btn-block" data-act="new-tournament">Nouveau tournoi (garder les joueurs)</button>
+      <button type="button" class="btn btn-block btn-danger" data-act="clear-all">Effacer joueurs et résultats</button></section>`}`;
+}
+function openSheet(kind, data) {
+  lastFocus = document.activeElement;
+  ui.sheet = kind;
+  if (kind === "settings") renderSettings();
+  else if (kind === "confirm") {
+    sheetPanel.innerHTML = `<header class="sheet-head"><h2 class="h-section" id="sheet-title">${esc(data.title)}</h2></header><p>${esc(data.text)}</p>${data.html || ""}
+      <div class="sheet-actions"><button type="button" class="btn" data-act="close-sheet">Annuler</button><button type="button" class="btn ${data.danger ? "btn-danger-solid" : "btn-primary"}" data-act="confirm-ok">${esc(data.ok)}</button></div>`;
+  } else if (kind === "copy") {
+    sheetPanel.innerHTML = `<header class="sheet-head"><h2 class="h-section" id="sheet-title">Texte à copier</h2><button type="button" class="icon-btn" data-act="close-sheet" aria-label="Fermer">${ICON.close}</button></header>
+      <p class="hint">Sélectionnez le texte, puis copiez-le.</p><label class="sr" for="copyArea">Texte à copier</label><textarea class="field copy-area" id="copyArea" readonly>${esc(data)}</textarea>`;
+  }
+  sheet.hidden = false;
+  document.body.classList.add("noscroll");
+  setTimeout(() => {
+    const t = kind === "copy" ? $("#copyArea") : sheetPanel.querySelector("button");
+    if (t) { t.focus({ preventScroll: true }); if (kind === "copy") t.select(); }
+  }, 30);
+}
+function closeSheet() {
+  ui.sheet = null;
+  pendingConfirm = null;
+  sheet.hidden = true;
+  sheetPanel.innerHTML = "";
+  document.body.classList.remove("noscroll");
+  if (lastFocus && document.contains(lastFocus)) { try { lastFocus.focus({ preventScroll: true }); } catch (e) { /* rien */ } }
+}
+function confirmAction(o) { openSheet("confirm", o); pendingConfirm = o.run; }
+function toast(msg, action) {
+  clearTimeout(toastTimer);
+  toastAction = action || null;
+  toastEl.innerHTML = "<span>" + esc(msg) + "</span>" + (action ? `<button type="button" data-act="toast-action">${esc(action.label)}</button>` : "");
+  toastEl.hidden = false;
+  toastTimer = setTimeout(hideToast, action ? 7000 : 3600);
+}
+function hideToast() { toastEl.hidden = true; toastAction = null; }
+function undoable(msg, snap) {
+  toast(msg, { label: "Annuler", run: () => { state = normalizeState(snap); touch({ now: true }); render(); toast("C’est annulé."); } });
+}
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Copié : prêt à coller dans un message.");
+  } catch (e) {
+    openSheet("copy", text);
+  }
+}
+
+/* ---------- Actions ---------- */
+function addPlayer(name, sex) {
+  const nm = normName(name);
+  if (!nm) return "Saisissez un prénom.";
+  if (state.players.some(p => p.name.toLocaleLowerCase("fr") === nm.toLocaleLowerCase("fr"))) return `${nm} est déjà inscrit. Ajoutez une initiale, par exemple « ${nm} B. ».`;
+  state.players.push({ id: "p" + state.nextId++, name: nm, sex: sex === "F" ? "F" : "H", active: true });
+  touch();
+  return "";
+}
+function redrawOffer(msg) {
+  const lr = lastRound();
+  if (lr && !state.finals && !roundStats(lr).any) toast(msg + ` Refaire le tirage de la manche ${lr.n} ?`, { label: "Refaire", run: redraw });
+}
+function addFromForm() {
+  const inp = $("#addName");
+  const err = addPlayer(inp.value, ui.sex);
+  const msg = $("#addMsg");
+  if (err) { msg.textContent = err; msg.hidden = false; inp.focus(); return; }
+  const added = state.players[state.players.length - 1].name;
+  render();
+  const again = $("#addName");
+  if (again) again.focus({ preventScroll: true });
+  if (!fixed()) redrawOffer(added + " ajouté.");
+  else if (state.teams.length) toast(added + " ajouté, sans équipe pour l’instant (onglet Équipes).");
+}
+function addPasted() {
+  const ta = $("#pasteArea");
+  const list = parseRoster(ta.value, ui.sex);
+  const names = new Set(state.players.map(p => p.name.toLocaleLowerCase("fr")));
+  let added = 0, dup = 0;
+  list.forEach(x => {
+    const k = x.name.toLocaleLowerCase("fr");
+    if (names.has(k)) { dup++; return; }
+    names.add(k);
+    state.players.push({ id: "p" + state.nextId++, name: x.name, sex: x.sex, active: x.active !== false });
+    added++;
+  });
+  if (!added) { toast(dup ? "Tous ces prénoms sont déjà inscrits." : "Aucun prénom trouvé dans la liste."); return; }
+  touch();
+  ui.pasteOpen = false;
+  render();
+  toast(pl(added, "joueur ajouté", "joueurs ajoutés") + (dup ? " · " + pl(dup, "doublon ignoré", "doublons ignorés") : ""));
+}
+function setActive(id, on) {
+  const p = playerById(id);
+  if (!p) return;
+  p.active = on;
+  touch();
+  render();
+  if (fixed() && !teamOfPlayer(id)) return;
+  const lr = lastRound();
+  const inRound = lr && (lr.rest.includes(id) || lr.matches.some(m => m.a.includes(id) || m.b.includes(id)));
+  if (!on && inRound) redrawOffer(p.name + " est absent.");
+  else if (on && !inRound) redrawOffer(p.name + " est présent.");
+}
+function renamePlayer(id, value, input) {
+  const p = playerById(id);
+  if (!p) return;
+  const nm = normName(value);
+  if (!nm) { input.value = p.name; return; }
+  if (state.players.some(q => q.id !== id && q.name.toLocaleLowerCase("fr") === nm.toLocaleLowerCase("fr"))) {
+    input.value = p.name;
+    toast(nm + " existe déjà.");
+    return;
+  }
+  input.value = nm;
+  if (nm !== p.name) { p.name = nm; touch(); }
+}
+function toggleSex(id) {
+  const p = playerById(id);
+  if (!p) return;
+  p.sex = p.sex === "H" ? "F" : "H";
+  touch();
+  render();
+}
+function deletePlayer(id) {
+  const p = playerById(id);
+  if (!p) return;
+  if (involvedIds().has(id)) { toast(p.name + " a déjà joué : décochez « présent » à la place."); return; }
+  const snap = clone(state);
+  state.players = state.players.filter(x => x.id !== id);
+  state.teams.forEach(t => { t.p = t.p.filter(x => x !== id); });
+  pruneTeams();
+  if (ui.pick === id) ui.pick = null;
+  touch();
+  render();
+  undoable(p.name + " supprimé.", snap);
+}
+
+/* ----- Équipes fixes ----- */
+function newTeam(ids) {
+  const n = state.teams.reduce((mx, t) => Math.max(mx, teamNum(t.id)), 0) + 1;
+  const t = { id: "t" + n, p: ids.slice(0, 2) };
+  state.teams.push(t);
+  return t;
+}
+/* Retire les équipes vides ; avant le tournoi, renumérote de 1 à n */
+function pruneTeams() {
+  const used = teamsInPlay(state);
+  state.teams = state.teams.filter(t => t.p.length || used.has(t.id));
+  if (!started()) state.teams.forEach((t, i) => { t.id = "t" + (i + 1); });
+}
+/* Après un remplacement, les matchs pas encore commencés de la manche en cours prennent la nouvelle composition */
+function syncRoundTeams() {
+  const lr = lastRound();
+  if (!lr || state.finals) return;
+  lr.matches.forEach(m => {
+    if (!m.ta || m.sa != null || m.sb != null) return;
+    const A = teamById(m.ta), B = teamById(m.tb);
+    if (A && A.p.length === 2) m.a = A.p.slice();
+    if (B && B.p.length === 2) m.b = B.p.slice();
+  });
+  if (lr.rt) lr.rest = [].concat.apply([], lr.rt.map(t => { const x = teamById(t); return x ? x.p.slice() : []; }));
+}
+function drawTeams() {
+  if (readOnly || started()) return;
+  const act = state.players.filter(p => p.active);
+  if (act.length < 2) { toast("Ajoutez au moins 2 joueurs présents."); return; }
+  const snap = clone(state), had = state.teams.length > 0;
+  const d = drawPairs(act, state.settings.mixedTeams);
+  state.teams = d.pairs.map((p, i) => ({ id: "t" + (i + 1), p }));
+  ui.pick = null;
+  touch();
+  render();
+  const msg = pl(d.pairs.length, "équipe tirée", "équipes tirées") + " au sort" + (d.left.length ? " · " + pname(d.left[0]) + " reste sans équipe" : "") + ".";
+  if (had) undoable(msg, snap); else toast(msg);
+}
+function clearTeams() {
+  if (readOnly || started() || !state.teams.length) return;
+  const snap = clone(state);
+  state.teams = [];
+  ui.pick = null;
+  touch();
+  render();
+  undoable("Équipes défaites : touchez deux joueurs pour former une équipe.", snap);
+}
+function pairFree() {
+  if (readOnly) return;
+  const free = freePlayers();
+  if (free.length < 2) return;
+  const snap = clone(state);
+  const d = drawPairs(free, state.settings.mixedTeams);
+  d.pairs.forEach(p => newTeam(p));
+  ui.pick = null;
+  touch();
+  render();
+  const msg = pl(d.pairs.length, "équipe formée", "équipes formées") + (d.left.length ? " · " + pname(d.left[0]) + " reste sans équipe" : "") + ".";
+  const lr = lastRound();
+  if (lr && !state.finals && !roundStats(lr).any) redrawOffer(msg);
+  else undoable(msg, snap);
+}
+function goTeams() {
+  if (!fixed()) return;
+  if (!readOnly && !started() && !state.teams.length) drawTeams();
+  switchTab("equipes");
+}
+function pickPlayer(id) {
+  if (readOnly || !playerById(id)) return;
+  if (!ui.pick || !playerById(ui.pick)) {
+    ui.pick = id;
+    render();
+    const t = teamOfPlayer(id), nm = pname(id);
+    toast(t ? (started() ? nm + " : touchez un joueur sans équipe pour le remplacer." : nm + " : touchez le joueur avec qui l’échanger.")
+      : nm + " : touchez un autre joueur sans équipe pour former une équipe, ou un joueur à remplacer.");
+    return;
+  }
+  if (ui.pick === id) { ui.pick = null; hideToast(); render(); return; }
+  const x = ui.pick;
+  ui.pick = null;
+  swapPlayers(x, id);
+}
+function swapPlayers(x, y) {
+  const tx = teamOfPlayer(x), ty = teamOfPlayer(y);
+  const snap = clone(state);
+  let msg;
+  if (!tx && !ty) {
+    const t = newTeam([x, y]);
+    msg = `${teamLabel(t.id)} formée : ${team(t.p)}.`;
+  } else if (tx && ty) {
+    if (tx === ty) { hideToast(); render(); return; }
+    if (started()) { render(); toast("Le tournoi a commencé : les équipes ne s’échangent plus leurs joueurs. Remplacez un joueur par un joueur sans équipe."); return; }
+    tx.p[tx.p.indexOf(x)] = y;
+    ty.p[ty.p.indexOf(y)] = x;
+    msg = `${pname(x)} et ${pname(y)} échangés.`;
+  } else {
+    const t = tx || ty, out = tx ? x : y, inn = tx ? y : x;
+    t.p[t.p.indexOf(out)] = inn;
+    msg = `${pname(inn)} remplace ${pname(out)} dans l’équipe ${teamNum(t.id)}.`;
+  }
+  syncRoundTeams();
+  touch();
+  render();
+  undoable(msg, snap);
+}
+function fillSlot(tid) {
+  const t = teamById(tid);
+  if (readOnly || !t || t.p.length >= 2) return;
+  const x = ui.pick;
+  if (!x || !playerById(x)) { toast("Touchez d’abord un joueur, puis cette place."); return; }
+  const from = teamOfPlayer(x);
+  ui.pick = null;
+  if (from === t) { hideToast(); render(); return; }
+  if (from && started()) { render(); toast("Le tournoi a commencé : choisissez un joueur sans équipe."); return; }
+  const snap = clone(state);
+  if (from) from.p = from.p.filter(id => id !== x);
+  t.p.push(x);
+  pruneTeams();
+  syncRoundTeams();
+  touch();
+  render();
+  const now = teamOfPlayer(x);
+  undoable(`${pname(x)} rejoint l’équipe ${now ? teamNum(now.id) : ""}.`, snap);
+}
+function setMode(m) {
+  if (readOnly) return;
+  m = m === "fixed" ? "fixed" : "melee";
+  if (state.settings.teamMode === m) return;
+  if (started()) { toast("Le tournoi a commencé : lancez un nouveau tournoi pour changer de formule."); return; }
+  state.settings = normSettings(Object.assign({}, state.settings, { teamMode: m }));
+  ui.pick = null;
+  touch();
+  render();
+  toast(m === "fixed" ? "Équipes fixes : les paires se forment dans l’onglet Équipes." : "Mêlée : nouvelles équipes tirées au sort à chaque manche.");
+}
+/* Montre la manche à compléter ou corriger, encadre les terrains concernés et dit pourquoi */
+function flagIncomplete(ri, st) {
+  const r = state.rounds[ri];
+  ui.tab = "matchs";
+  ui.round = ri;
+  ui.all = false;
+  if (ri !== state.rounds.length - 1 || state.finals) ui.unlock = ri;
+  render();
+  st.missing.forEach(mi => { const c = document.getElementById("card-r" + ri + "m" + mi); if (c) c.classList.add("flag"); });
+  const first = document.getElementById("card-r" + ri + "m" + st.missing[0]);
+  if (first) first.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+  const why = mi => "terrain " + r.matches[mi].court + (st.bad.includes(mi) ? " (score à vérifier)" : " (score manquant)");
+  toast(`Manche ${r.n} : ` + st.missing.map(why).join(", ") + ".");
+}
+/* Avant de passer à la suite : tous les scores de toutes les manches doivent être complets et possibles */
+function checkAllRounds() {
+  const bi = firstIncompleteRound();
+  if (bi < 0) return true;
+  flagIncomplete(bi, roundStats(state.rounds[bi]));
+  return false;
+}
+/* Récapitulatif de la manche à valider avant de lancer la suivante ou les finales */
+function confirmRound(r, ok, run) {
+  confirmAction({
+    title: `Valider la manche ${r.n}`,
+    text: "Vérifiez les scores : une erreur se corrige encore ensuite, mais elle change le classement.",
+    html: scoreLines(r, state.settings),
+    ok,
+    run
+  });
+}
+function launchRound(opts) {
+  if (readOnly) return;
+  if (state.finals) { toast("Les finales sont lancées. Annulez-les pour rejouer une manche."); return; }
+  const lr = lastRound();
+  if (lr && !checkAllRounds()) return;
+  if (lr && !(opts && opts.confirmed)) { confirmRound(lr, `Lancer la manche ${lr.n + 1}`, () => launchRound({ confirmed: true })); return; }
+  let r;
+  try { r = generateRound(state); } catch (e) { toast(e.message); return; }
+  state.rounds.push(r);
+  ui.round = null;
+  ui.pick = null;
+  ui.all = false;
+  ui.unlock = null;
+  ui.rankK = null;
+  ui.tab = "matchs";
+  touch({ now: true });
+  render();
+  window.scrollTo(0, 0);
+  toast(`Manche ${r.n} lancée : ${pl(r.matches.length, "match", "matchs")}.`);
+}
+function redraw() {
+  if (readOnly) return;
+  const lr = lastRound();
+  if (!lr || roundStats(lr).any || state.finals) return;
+  const snap = clone(state);
+  state.rounds.pop();
+  let r;
+  try { r = generateRound(state); } catch (e) { state = normalizeState(snap); toast(e.message); return; }
+  state.rounds.push(r);
+  ui.round = null;
+  ui.tab = "matchs";
+  touch({ now: true });
+  render();
+  undoable(`Nouveau tirage pour la manche ${r.n}.`, snap);
+}
+function cancelRound() {
+  const lr = lastRound();
+  if (readOnly || !lr || roundStats(lr).any || state.finals) return;
+  const snap = clone(state);
+  state.rounds.pop();
+  ui.round = null;
+  touch({ now: true });
+  render();
+  undoable(`Manche ${lr.n} annulée.`, snap);
+}
+function createFinals(opts) {
+  if (readOnly) return;
+  if (state.finals) { switchTab("finales"); return; }
+  const lr = lastRound();
+  if (!lr) { toast(fixed() ? "Jouez au moins une manche avant la finale." : "Jouez au moins une manche avant les finales."); return; }
+  if (!checkAllRounds()) return;
+  const f = buildFinals(state), fmt = finalsFormat();
+  if (!FINAL_KEYS.some(k => f[k])) {
+    toast(fmt === "team" ? "Il faut au moins 2 équipes classées pour la finale."
+      : fmt === "mixte" ? "Double mixte impossible : il faut au moins 2 hommes et 2 femmes classés. Choisissez un autre format."
+      : fmt === "general" ? "Il faut au moins 2 joueurs classés pour une finale."
+      : "Il faut au moins 2 joueurs ou 2 joueuses classés pour une finale.");
+    if (ui.tab !== "finales") switchTab("finales");
+    return;
+  }
+  if (!(opts && opts.confirmed)) { confirmRound(lr, fmt === "sexes" ? "Créer les finales" : "Créer la finale", () => createFinals({ confirmed: true })); return; }
+  state.finals = { H: f.H, F: f.F, T: f.T, X: f.X, G: f.G, date: localISODate(), afterRound: state.rounds.length };
+  ui.unlock = null;
+  ui.all = false;
+  ui.tab = "finales";
+  touch({ now: true });
+  render();
+  window.scrollTo(0, 0);
+}
+function cancelFinals() {
+  if (readOnly || !state.finals) return;
+  const snap = clone(state);
+  state.finals = null;
+  touch({ now: true });
+  render();
+  undoable("Finales annulées.", snap);
+}
+function archive() {
+  const F = state.finals;
+  if (!F) return;
+  const win = sx => { const f = F[sx], w = finalWinner(f, finalRules()); return w ? f[w].map(pname) : []; };
+  const rec = { date: F.date || localISODate(), players: involvedIds().size, rounds: state.rounds.length, H: win("H"), F: win("F"), T: win("T"), X: win("X"), G: win("G") };
+  if (rec.H.length || rec.F.length || rec.T.length || rec.X.length || rec.G.length) state.history = [rec].concat(state.history).slice(0, 30);
+}
+function newTournament() {
+  const fr = finalRules();
+  const done = state.finals && FINAL_KEYS.some(k => finalWinner(state.finals[k], fr));
+  confirmAction({
+    title: "Nouveau tournoi",
+    text: "Les manches, les scores et les finales seront effacés. Les joueurs" + (fixed() ? ", les équipes" : "") + " et les réglages sont conservés." + (done ? " Les vainqueurs rejoignent le palmarès." : ""),
+    ok: "Effacer les résultats",
+    danger: true,
+    run: () => {
+      const snap = clone(state);
+      archive();
+      state.rounds = [];
+      state.finals = null;
+      pruneTeams();
+      ui.round = null;
+      ui.tab = fixed() ? "equipes" : "joueurs";
+      touch({ now: true });
+      render();
+      window.scrollTo(0, 0);
+      undoable("Nouveau tournoi prêt.", snap);
+    }
+  });
+}
+function clearAll() {
+  confirmAction({
+    title: "Tout effacer",
+    text: "Les joueurs, les manches et les finales seront supprimés. Le palmarès et les réglages restent.",
+    ok: "Tout effacer",
+    danger: true,
+    run: () => {
+      const snap = clone(state);
+      archive();
+      state.players = [];
+      state.teams = [];
+      state.rounds = [];
+      state.finals = null;
+      state.exemple = false;
+      ui.round = null;
+      ui.tab = "joueurs";
+      touch({ now: true });
+      render();
+      undoable("Tout est effacé.", snap);
+    }
+  });
+}
+function resetExample() {
+  const snap = clone(state);
+  state = emptyState();
+  ui.round = null;
+  ui.tab = "joueurs";
+  ui.rank = "all";
+  touch({ now: true });
+  render();
+  window.scrollTo(0, 0);
+  undoable("Exemple effacé : ajoutez vos joueurs.", snap);
+}
+function setScore(ref, side, val) {
+  const m = matchByRef(ref);
+  if (!m) return;
+  if (side === "a") m.sa = val; else m.sb = val;
+  touch();
+  patchCard(ref);
+  if (ref[0] === "r") patchRoundFooter(+/^r(\d+)/.exec(ref)[1]);
+  else { const slot = document.getElementById("champ-" + ref.slice(1)); if (slot) slot.innerHTML = championInner(ref.slice(1)); }
+  renderChrome();
+}
+function setSetting(k, v) {
+  if (readOnly) return;
+  const S = Object.assign({}, state.settings);
+  if (k === "allowDraw" || k === "fillSingles" || k === "mixedTeams") S[k] = !!v;
+  else if (k === "finalFormat") {
+    if (state.finals) { toast("Les finales sont créées : annulez-les pour changer de format."); return; }
+    S[k] = v;
+  } else {
+    const n = typeof v === "number" ? v : parseInt(String(v).replace(/[^\d]/g, ""), 10);
+    if (!Number.isFinite(n)) { renderSettings(); return; }
+    S[k] = n;
+  }
+  const before = state.settings.scoreFormat;
+  state.settings = normSettings(S);
+  touch();
+  render();
+  if (k === "scoreFormat" && state.settings.scoreFormat !== before) {
+    let n = 0;
+    state.rounds.forEach(r => { n += roundStats(r).bad.length; });
+    toast(n ? pl(n, "score déjà saisi ne respecte", "scores déjà saisis ne respectent") + " pas ce format : " + (n > 1 ? "ils sont signalés" : "il est signalé") + " « À vérifier »."
+      : state.settings.scoreFormat ? `Matchs en ${state.settings.scoreFormat} points : les scores impossibles seront signalés.` : "Scores libres : seul un vainqueur est exigé.");
+  }
+}
+function switchTab(tab) {
+  if (!TABS.includes(tab)) return;
+  if (tab === "matchs") { ui.round = null; ui.all = false; }
+  ui.unlock = null;
+  ui.pick = null;
+  ui.tab = tab;
+  saveLocal();
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Textes à partager ---------- */
+function roundText(ri) {
+  const r = state.rounds[ri];
+  const lines = ["Manche " + r.n];
+  const side = (ids, tid) => (tid ? `${teamLabel(tid)} (${team(ids)})` : team(ids));
+  r.matches.forEach(m => {
+    const sc = m.sa != null && m.sb != null ? ` ${m.sa}–${m.sb} ` : " contre ";
+    const check = m.sa != null && m.sb != null && scoreState(m, state.settings) !== "done" ? " (score à vérifier)" : "";
+    lines.push(`Terrain ${m.court} : ${side(m.a, m.ta)}${sc}${side(m.b, m.tb)}${m.a.length === 1 ? " (simple)" : ""}${check}`);
+  });
+  if (r.rt && r.rt.length) lines.push("Au repos : " + r.rt.map(t => `${teamLabel(t)} (${teamNames(t)})`).join(", "));
+  else if (r.rest.length) lines.push("Au repos : " + r.rest.map(pname).join(", "));
+  return lines.join("\n");
+}
+function rankText() {
+  const ctx = rankContext(), after = " · après la manche " + ctx.k;
+  if (ctx.teams) {
+    return ["Classement des équipes" + after]
+      .concat(ctx.rows.map(x => `${x.rank}. ${x.name} (éq. ${teamNum(x.id)}) · ${pl(x.Pts, "pt", "pts")} · GA ${signed(x.diff)}${moveText(moveOf(ctx, x, false))}`)).join("\n");
+  }
+  const v = ui.rank;
+  const list = v === "all" ? ctx.rows : ctx.rows.filter(x => x.sex === v);
+  const title = v === "all" ? "Classement mixte" : v === "H" ? "Classement hommes" : "Classement femmes";
+  return [title + after]
+    .concat(list.map(x => `${v === "all" ? x.rank : x.srank}. ${x.name} · ${pl(x.Pts, "pt", "pts")} · GA ${signed(x.diff)}${moveText(moveOf(ctx, x, v !== "all"))}`)).join("\n");
+}
+function allScoresText() {
+  const parts = [];
+  if (state.finals) parts.push(resultsText());
+  for (let i = state.rounds.length - 1; i >= 0; i--) parts.push(roundText(i));
+  return parts.join("\n\n");
+}
+function resultsText() {
+  const F = state.finals, lines = ["Résultats · " + fmtDate(F.date || localISODate())];
+  FINAL_KEYS.forEach(sx => {
+    const f = F[sx];
+    if (!f) return;
+    const title = FINAL_TITLE[sx], w = finalWinner(f, finalRules());
+    const nm = k => (sx === "T" ? `${team(f[k])} (${teamLabel(k === "a" ? f.ta : f.tb)})` : team(f[k]));
+    if (!w) { lines.push(`${title} : ${nm("a")} contre ${nm("b")} (à jouer)`); return; }
+    const l = w === "a" ? "b" : "a", sw = w === "a" ? f.sa : f.sb, sl = w === "a" ? f.sb : f.sa;
+    lines.push(`${title} : ${nm(w)} ${f[w].length > 1 ? "battent" : "bat"} ${nm(l)} ${sw}–${sl}`);
+  });
+  return lines.join("\n");
+}
+
+/* ---------- Écouteurs ---------- */
+document.addEventListener("click", e => {
+  if (e.target === sheet) { closeSheet(); return; }
+  const t = e.target.closest("[data-act]");
+  if (!t || t.disabled) return;
+  const act = t.dataset.act, id = t.dataset.id;
+  switch (act) {
+    case "tab": switchTab(t.dataset.tab); break;
+    case "settings": openSheet("settings"); break;
+    case "close-sheet": closeSheet(); break;
+    case "sync-info": toast(SYNC_TEXT[syncState]); break;
+    case "addsex":
+      ui.sex = t.dataset.sex === "F" ? "F" : "H";
+      document.querySelectorAll('[data-act="addsex"]').forEach(b => b.setAttribute("aria-checked", String(b.dataset.sex === ui.sex)));
+      saveLocal();
+      break;
+    case "sex": if (!readOnly) toggleSex(id); break;
+    case "del": if (!readOnly) deletePlayer(id); break;
+    case "paste": if (!readOnly) addPasted(); break;
+    case "launch": launchRound(); break;
+    case "round": ui.round = +t.dataset.i; ui.all = false; ui.unlock = null; render(); window.scrollTo(0, 0); break;
+    case "round-all": ui.all = true; ui.unlock = null; render(); break;
+    case "copy-all": copyText(allScoresText()); break;
+    case "unlock": unlockRound(+t.dataset.i); break;
+    case "relock": relockRound(); break;
+    case "fmt": setSetting("scoreFormat", Number(t.dataset.v)); break;
+    case "final-fmt": setSetting("finalFormat", t.dataset.v); break;
+    case "rank-round": ui.rankK = +t.dataset.k; ui.open = null; render(); break;
+    case "redraw": redraw(); break;
+    case "cancel-round": cancelRound(); break;
+    case "finals-create": createFinals(); break;
+    case "finals-cancel": cancelFinals(); break;
+    case "new-tournament": if (!readOnly) newTournament(); break;
+    case "clear-all": if (!readOnly) clearAll(); break;
+    case "example-reset": if (!readOnly) resetExample(); break;
+    case "confirm-ok": { const run = pendingConfirm; closeSheet(); if (run) run(); break; }
+    case "copy-round": copyText(roundText(+t.dataset.i)); break;
+    case "copy-rank": copyText(rankText()); break;
+    case "copy-results": copyText(resultsText()); break;
+    case "rank": ui.rank = t.dataset.v; ui.open = null; saveLocal(); render(); break;
+    case "rowtoggle": toggleRow(t); break;
+    case "toast-action": { const a = toastAction; hideToast(); if (a) a.run(); break; }
+    case "step": setSetting("courts", state.settings.courts + Number(t.dataset.d)); break;
+    case "mode": setMode(t.dataset.mode); break;
+    case "go-teams": goTeams(); break;
+    case "team-draw": drawTeams(); break;
+    case "team-clear": clearTeams(); break;
+    case "team-pair-free": pairFree(); break;
+    case "pick": pickPlayer(id); break;
+    case "slot": fillSlot(t.dataset.team); break;
+    default: break;
+  }
+});
+function toggleRow(tr) {
+  const open = tr.getAttribute("aria-expanded") !== "true";
+  document.querySelectorAll("tr.r-row[aria-expanded='true']").forEach(r => { r.setAttribute("aria-expanded", "false"); r.nextElementSibling.hidden = true; });
+  tr.setAttribute("aria-expanded", String(open));
+  if (open) {
+    const ctx = rankContext(), id = tr.dataset.id, x = ctx.rows.find(y => y.id === id);
+    if (x) tr.nextElementSibling.innerHTML = detailCell(x, (ctx.teams ? teamMatchLines(id) : playerMatchLines(id)).filter(l => l.n <= ctx.k));
+  }
+  tr.nextElementSibling.hidden = !open;
+  ui.open = open ? tr.dataset.id : null;
+}
+function unlockRound(ri) {
+  if (readOnly || !state.rounds[ri]) return;
+  ui.unlock = ri;
+  render();
+  const first = document.getElementById("sc-r" + ri + "m0-a");
+  toast(`Manche ${state.rounds[ri].n} déverrouillée : modifiez le score, puis touchez « Terminer la correction ».`);
+  if (first) first.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+}
+function relockRound() {
+  const ri = ui.unlock;
+  ui.unlock = null;
+  render();
+  const r = state.rounds[ri];
+  if (!r) return;
+  const st = roundStats(r);
+  if (st.done < st.total) toast(`Attention : manche ${r.n}, ${pl(st.total - st.done, "score manque ou est à vérifier", "scores manquent ou sont à vérifier")}.`);
+  else toast(`Manche ${r.n} corrigée et verrouillée.`);
+}
+document.addEventListener("submit", e => {
+  if (e.target.id === "addForm") { e.preventDefault(); if (!readOnly) addFromForm(); }
+});
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.matches('input[data-act="active"]')) { if (!readOnly) setActive(t.dataset.id, t.checked); }
+  else if (t.matches(".pname-input")) { if (!readOnly) renamePlayer(t.dataset.id, t.value, t); }
+  else if (t.matches("[data-set]")) {
+    setSetting(t.dataset.set, t.type === "checkbox" ? t.checked : t.value);
+    if (t.dataset.set === "mixedTeams" && !readOnly && !started() && state.teams.length) {
+      toast(t.checked ? "Paires mixtes activées." : "Paires mixtes désactivées.", { label: "Refaire le tirage", run: drawTeams });
+    }
+  }
+});
+main.addEventListener("input", e => {
+  const t = e.target;
+  if (t.id === "addName") { const msg = $("#addMsg"); if (msg) msg.hidden = true; return; }
+  if (!t.matches("input.score") || readOnly || t.readOnly) return;
+  const clean = t.value.replace(/\D/g, "").slice(0, 2);
+  if (clean !== t.value) t.value = clean;
+  setScore(t.dataset.ref, t.dataset.side, clean === "" ? null : parseInt(clean, 10));
+});
+main.addEventListener("keydown", e => {
+  const t = e.target;
+  if (e.key === "Enter" && t.matches("input.score")) {
+    e.preventDefault();
+    let next = null;
+    if (t.dataset.side === "a") next = document.getElementById("sc-" + t.dataset.ref + "-b");
+    else {
+      const all = Array.from(main.querySelectorAll('input.score[data-side="a"]'));
+      const card = t.closest(".match");
+      const idx = all.findIndex(x => x.closest(".match") === card);
+      next = all[idx + 1] || null;
+    }
+    if (next) next.focus(); else t.blur();
+  } else if (e.key === "Enter" && t.matches(".pname-input")) {
+    e.preventDefault();
+    t.blur();
+  } else if ((e.key === "Enter" || e.key === " ") && t.matches("tr.r-row")) {
+    e.preventDefault();
+    toggleRow(t);
+  }
+});
+main.addEventListener("focusout", () => {
+  if (!deferredRender) return;
+  setTimeout(() => { if (deferredRender && !isTyping()) render(); }, 0);
+});
+document.addEventListener("toggle", e => { if (e.target && e.target.id === "pasteBox") ui.pasteOpen = e.target.open; }, true);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && ui.sheet) closeSheet(); });
+
+/* Garder l'écran allumé pendant le tournoi (si le navigateur le permet) */
+let wakeLock = null;
+async function keepAwake() {
+  if (wakeLock || !("wakeLock" in navigator) || document.visibilityState !== "visible") return;
+  if (!state.rounds.length) return;
+  try {
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+  } catch (e) { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", keepAwake);
+document.addEventListener("pointerup", keepAwake, { passive: true });
+
+/* ---------- Démarrage ---------- */
+function boot(hotData) {
+  const local = readLocal();
+  if (local && local.state) {
+    state = normalizeState(local.state);
+    pending = local.pending === true;
+    if (hasContent(state) || state.updatedAt) booted = true;
+    if (local.ui) {
+      if (TABS.includes(local.ui.tab) && hasContent(state)) ui.tab = local.ui.tab;
+      if (["all", "H", "F"].includes(local.ui.rank)) ui.rank = local.ui.rank;
+      if (local.ui.sex === "F") ui.sex = "F";
+    }
+  }
+  if (hotData && typeof hotData === "object") {
+    if (TABS.includes(hotData.tab)) ui.tab = hotData.tab;
+    if (["all", "H", "F"].includes(hotData.rank)) ui.rank = hotData.rank;
+    if (Number.isInteger(hotData.round)) ui.round = hotData.round;
+  }
+  render();
+  connect();
+}
+const hot = window.claude && window.claude.hot;
+if (hot && typeof hot.snapshot === "function") {
+  try { hot.snapshot(() => ({ tab: ui.tab, rank: ui.rank, round: ui.round })); } catch (e) { /* rien */ }
+}
+if (hot && typeof hot.ready === "function") hot.ready(boot);
+else boot((hot && hot.data) || {});
+})();
+</script>
+<!-- ===== Fin de la source de l'artefact ===== -->
+<script>
+/* Appli autonome : le service worker garde la page et les polices pour un usage hors ligne.
+   Sans effet sur claude.ai (ce bloc n'y est pas publié), en file:// et en http hors localhost. */
+(function () {
+  "use strict";
+  if (!("serviceWorker" in navigator) || !window.isSecureContext || !/^https?:$/.test(location.protocol)) return;
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js")
+      .then(function () { return navigator.serviceWorker.ready; })
+      .then(function (reg) {
+        /* Les polices peuvent arriver sans passer par le service worker (première visite, cache du navigateur) :
+           on lui donne l'adresse de leurs feuilles de style pour qu'il les garde, avec leurs fichiers */
+        var urls = [].map.call(document.querySelectorAll('link[rel="stylesheet"]'), function (l) { return l.href; })
+          .filter(function (u) { return /^https:\/\/fonts\.googleapis\.com\//.test(u); });
+        if (urls.length && reg.active) reg.active.postMessage({ type: "polices", urls: urls });
+      })
+      .catch(function () { /* navigation privée ou stockage refusé : l'appli marche quand même */ });
+    /* Appli installée : demander au navigateur de ne pas effacer le tournoi enregistré sur l'appareil */
+    var installed = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+    if (installed && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () { /* rien */ });
+  });
+})();
+</script>
+</body>
+</html>

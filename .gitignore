@@ -1,0 +1,11 @@
+# Ce dépôt est public et ne contient que l'appli publiée : GitHub Pages et Cloudflare Pages servent sa racine telle quelle.
+# Les fichiers de travail (tests, récap, outils, serveur local, exemple) restent sur l'ordinateur.
+# Pour publier un fichier de plus, l'ajouter ici, puis à la liste SHELL de sw.js s'il doit marcher hors ligne.
+/*
+!/.gitignore
+!/.nojekyll
+!/README.md
+!/index.html
+!/manifest.webmanifest
+!/sw.js
+!/icons/
